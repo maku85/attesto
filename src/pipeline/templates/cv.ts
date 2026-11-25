@@ -75,7 +75,10 @@ export function cvTemplate(input: TemplateInput): Block[] {
     bullets(
       categories.map((category) => {
         const members = skills.filter((skill) => text(skill.category) === category);
-        const names = members.map(({ name }) => text(name)).join(", ");
+        // Without the level, basic and expert knowledge would read the same.
+        const names = members
+          .map(({ name, level }) => `${text(name)} (${label.levels[level]})`)
+          .join(", ");
         return fromKb(`${category}: ${names}`, ...members.map(({ id }) => id));
       }),
     ),

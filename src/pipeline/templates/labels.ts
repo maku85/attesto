@@ -1,4 +1,4 @@
-import type { Lang } from "../../kb/schema.ts";
+import type { KnowledgeBase, Lang } from "../../kb/schema.ts";
 
 export type Labels = {
   cv: string;
@@ -14,6 +14,7 @@ export type Labels = {
   experience: string;
   projects: string;
   skills: string;
+  levels: Record<KnowledgeBase["skills"][number]["level"], string>;
   education: string;
   certifications: string;
   languages: string;
@@ -46,6 +47,7 @@ export const LABELS: Record<Lang, Labels> = {
     experience: "Esperienze professionali",
     projects: "Progetti",
     skills: "Competenze",
+    levels: { basic: "base", working: "operativo", advanced: "avanzato", expert: "esperto" },
     education: "Formazione",
     certifications: "Certificazioni",
     languages: "Lingue",
@@ -77,6 +79,12 @@ export const LABELS: Record<Lang, Labels> = {
     experience: "Professional experience",
     projects: "Projects",
     skills: "Skills",
+    levels: {
+      basic: "basic",
+      working: "working knowledge",
+      advanced: "advanced",
+      expert: "expert",
+    },
     education: "Education",
     certifications: "Certifications",
     languages: "Languages",
@@ -109,6 +117,12 @@ export const LABELS: Record<Lang, Labels> = {
     experience: "Berufserfahrung",
     projects: "Projekte",
     skills: "Kenntnisse",
+    levels: {
+      basic: "Grundkenntnisse",
+      working: "praktische Kenntnisse",
+      advanced: "fortgeschritten",
+      expert: "Expertenniveau",
+    },
     education: "Ausbildung",
     certifications: "Zertifizierungen",
     languages: "Sprachen",

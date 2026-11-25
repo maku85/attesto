@@ -127,7 +127,9 @@ describe("CV", () => {
   });
 
   it("lists only selected skills", () => {
-    expect(markdown()).toContain("- Platform: Kubernetes, Terraform\n- AI: LLM integration");
+    expect(markdown()).toContain(
+      "- Platform: Kubernetes (advanced), Terraform (advanced)\n- AI: LLM integration (working knowledge)",
+    );
     expect(markdown()).not.toContain("Apache Kafka");
   });
 
@@ -141,10 +143,28 @@ describe("CV", () => {
   it.each<[Lang, string[]]>([
     [
       "it",
-      ["gennaio 2022 – oggi", "Italiano: madrelingua", "Inglese: C1", "Zurigo", "2011 – 2014"],
+      [
+        "gennaio 2022 – oggi",
+        "Kubernetes (avanzato)",
+        "(operativo)",
+        "Italiano: madrelingua",
+        "Inglese: C1",
+        "Zurigo",
+        "2011 – 2014",
+      ],
     ],
     ["en", ["January 2022 – present", "Italian: native", "English: C1", "Zurich"]],
-    ["de", ["Januar 2022 – heute", "Italienisch: Muttersprache", "Englisch: C1", "Zürich"]],
+    [
+      "de",
+      [
+        "Januar 2022 – heute",
+        "Kubernetes (fortgeschritten)",
+        "(praktische Kenntnisse)",
+        "Italienisch: Muttersprache",
+        "Englisch: C1",
+        "Zürich",
+      ],
+    ],
   ])("is localized in %s", (language, texts) => {
     for (const text of texts) expect(markdown({ language })).toContain(text);
   });
