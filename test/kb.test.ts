@@ -4,13 +4,13 @@ import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { loadKb, resolveKbDir } from "../src/kb/load.ts";
 import type { KnowledgeBase } from "../src/kb/schema.ts";
+import { EXAMPLE_KB } from "./fixtures.ts";
 
-const EXAMPLE = join(import.meta.dirname, "..", "examples", "kb");
 let dir: string;
 
 beforeEach(() => {
   dir = mkdtempSync(join(tmpdir(), "attesto-kb-"));
-  cpSync(EXAMPLE, dir, { recursive: true });
+  cpSync(EXAMPLE_KB, dir, { recursive: true });
 });
 afterEach(() => rmSync(dir, { recursive: true }));
 
@@ -106,7 +106,7 @@ describe("files", () => {
   it("reports a missing directory", () => {
     rmSync(dir, { recursive: true });
     expect(issues()).toEqual([expect.stringContaining("file not found")]);
-    cpSync(EXAMPLE, dir, { recursive: true });
+    cpSync(EXAMPLE_KB, dir, { recursive: true });
   });
 
   it("gives the line of a YAML error without quoting its content", () => {
