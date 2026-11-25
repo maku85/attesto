@@ -16,7 +16,10 @@ checked against it. A wrong or stale entry becomes a wrong "supported" claim.
   unambiguous, and the verifier relies on it to reject achievements moved to another employer.
 - Links are stored in one direction only. An achievement lists its skills; the evidence for a skill
   is derived.
-- Skills record `since` rather than a number of years, which would go stale.
+- Skills record `since` and `until` rather than a number of years, which would go stale. Without
+  `until` no years are derived: the time since the first use is not experience.
+- Aliases help to find a skill and are never stated as facts. A first version listed them with the
+  skill, and "observability" turned into claimed experience with Prometheus and Grafana.
 - `person.defaultLanguage` defines which text is the original. Translations are conveniences: every
   translated field must also contain the original.
 - Error messages never quote file content, because they also reach MCP clients.

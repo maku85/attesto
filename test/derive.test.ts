@@ -76,9 +76,18 @@ describe("total experience", () => {
   });
 });
 
-it("derives experience with a skill from its start", () => {
-  expect(months()["drv-skl-terraform"]).toBe(58);
-  const kb = exampleKb();
-  delete kb.skills[0]?.since;
-  expect(months(kb)["drv-skl-typescript"]).toBeUndefined();
+describe("skills", () => {
+  it("counts from the first use to today only for a skill still in use", () => {
+    expect(months()["drv-skl-terraform"]).toBe(58);
+  });
+
+  it("stops at the last use", () => {
+    expect(months()["drv-skl-kafka"]).toBe(28);
+  });
+
+  it.each(["since", "until"] as const)("derives nothing without %s", (field) => {
+    const kb = exampleKb();
+    delete kb.skills[0]?.[field];
+    expect(months(kb)["drv-skl-typescript"]).toBeUndefined();
+  });
 });

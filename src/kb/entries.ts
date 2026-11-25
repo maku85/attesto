@@ -108,6 +108,7 @@ export function listEntries(kb: KnowledgeBase): Entry[] {
         type: "skill",
         title: title(skill.name),
         skills: [skill.id],
+        date: skill.until,
         data: { ...skill, evidence: evidenceFor(kb, skill.id) },
       },
       [skill.category],

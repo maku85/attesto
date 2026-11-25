@@ -1,6 +1,7 @@
 # - id: skl-something
 #   name: Something
-#   aliases: [Other name]
+#   aliases: [Other name]    # to find it by; only real synonyms
 #   category: Category
 #   level: working         # basic, working, advanced or expert
 #   since: 2020-01
+#   until: null            # null means still in use; needed to derive years of experience

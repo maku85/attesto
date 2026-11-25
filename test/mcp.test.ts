@@ -170,7 +170,7 @@ describe("in process", () => {
   it("offers every entry as a resource, without private fields", async () => {
     await connect(EXAMPLE_KB, noProvider);
     const { resources } = await client.listResources();
-    expect(resources).toHaveLength(40);
+    expect(resources).toHaveLength(42);
     let all = "";
     for (const { uri } of resources) {
       const { contents } = await client.readResource({ uri });

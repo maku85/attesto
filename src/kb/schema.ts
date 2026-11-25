@@ -73,10 +73,13 @@ export const Project = z.strictObject({
 export const Skill = z.strictObject({
   id: id("skl"),
   name: Text,
+  /** Other names to find the skill by. They are not facts: a claim cannot use them. */
   aliases: z.array(str).default([]),
   category: Text,
   level: z.enum(["basic", "working", "advanced", "expert"]),
   since: PartialDate.optional(),
+  /** `null` means still in use. Years of experience are derived only when this is stated. */
+  until: PartialDate.nullable().optional(),
 });
 
 export const Education = z.strictObject({

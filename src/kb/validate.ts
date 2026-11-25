@@ -53,7 +53,10 @@ export function crossCheck(kb: KnowledgeBase): Issue[] {
     ordered("experiences", experience.id, experience.start, experience.end);
   }
   for (const project of kb.projects) knownSkills("projects", project.id, project.tech);
-  for (const skill of kb.skills) unique("skills", skill.id);
+  for (const skill of kb.skills) {
+    unique("skills", skill.id);
+    ordered("skills", skill.id, skill.since, skill.until);
+  }
   for (const education of kb.education) {
     unique("education", education.id);
     ordered("education", education.id, education.start, education.end);

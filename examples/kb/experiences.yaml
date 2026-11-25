@@ -42,7 +42,7 @@
       metrics:
         - { value: 120, unit: alerts per month, context: before }
         - { value: 35, unit: alerts per month, context: after }
-      skills: [skl-observability]
+      skills: [skl-observability, skl-prometheus]
       date: 2024-09
     - id: ach-lagonube-mentoring
       statement: Mentored 3 junior engineers.

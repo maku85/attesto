@@ -15,7 +15,7 @@ function attesto(args: string[], env: NodeJS.ProcessEnv = {}) {
 
 it("validates the example knowledge base", () => {
   const { status, stdout, stderr } = attesto(["validate", "--kb", EXAMPLE_KB]);
-  expect(stdout).toBe("Valid: 4 experiences, 2 projects, 15 achievements, 14 skills\n");
+  expect(stdout).toBe("Valid: 4 experiences, 2 projects, 15 achievements, 16 skills\n");
   expect(stderr).toBe("");
   expect(status).toBe(0);
 });

@@ -27,6 +27,8 @@ These are not supported:
   "significantly", "expert" or "passionate", and unstated causes or purposes.
 - A higher skill level, or a skill used in a place or for a purpose the sources do not connect it to.
 - Facts from two sources merged so that one seems to have happened in the context of the other.
+- A reference to another sentence, such as "in the same role" or "there", that the sources do not
+  resolve.
 - An expired certification presented as held or valid.
 - An ability or result based only on the candidate's own statement of motivation or availability.
   Such a statement supports only interest or availability.

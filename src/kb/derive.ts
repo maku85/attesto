@@ -36,10 +36,11 @@ export function deriveFacts(
     subject: "Total professional experience, with overlapping roles counted once",
   });
   for (const skill of kb.skills) {
-    if (!skill.since) continue;
+    if (!skill.since || skill.until === undefined) continue;
+    const end = skill.until === null ? now : Math.min(now, toMonth(skill.until, 1) + 1);
     add({
       id: `drv-${skill.id}`,
-      months: now - toMonth(skill.since, 12),
+      months: end - toMonth(skill.since, 12),
       subject: `Experience with ${name(skill)}`,
     });
   }

@@ -140,6 +140,13 @@ describe("cross-checks", () => {
     ]);
   });
 
+  it("rejects a skill last used before it was first used", () => {
+    replace("skills.yaml", "until: 2021-12", "until: 2018-01");
+    expect(issues()).toEqual([
+      "skills.yaml (skl-kafka): starts in 2019-09, after it ends in 2018-01",
+    ]);
+  });
+
   it("compares dates of different precision at the coarser one", () => {
     replace("experiences.yaml", "end: 2021-12", "end: 2019");
     expect(issues()).toEqual([]);

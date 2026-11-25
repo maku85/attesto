@@ -23,12 +23,7 @@ export type Source = {
 export function listSources(kb: KnowledgeBase, asOf: string, lang: Lang): Source[] {
   const text = (value: Text) => localize(value, lang, kb.person.defaultLanguage);
   const month = asOf.slice(0, 7);
-  const skillName = new Map(
-    kb.skills.map(({ id, name, aliases }) => [
-      id,
-      aliases.length > 0 ? `${text(name)} (${aliases.join(", ")})` : text(name),
-    ]),
-  );
+  const skillName = new Map(kb.skills.map(({ id, name }) => [id, text(name)]));
   const skillLine = (label: string, ids: string[]) =>
     ids.length > 0 ? [`${label}: ${ids.map((id) => skillName.get(id)).join("; ")}`] : [];
   const period = (start: string | undefined, end: string | null) =>
@@ -89,7 +84,9 @@ export function listSources(kb: KnowledgeBase, asOf: string, lang: Lang): Source
         `Skill: ${skillName.get(skill.id)}`,
         `Category: ${text(skill.category)}`,
         `Level: ${skill.level}`,
-        ...(skill.since ? [`Since: ${skill.since}`] : []),
+        ...(skill.since ? [`First used: ${skill.since}`] : []),
+        ...(skill.until === null ? ["Still in use"] : []),
+        ...(skill.until ? [`Last used: ${skill.until}`] : []),
       ],
     })),
     ...kb.education.map((education): Source => ({

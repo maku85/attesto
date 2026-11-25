@@ -15,7 +15,8 @@ describe("matching", () => {
   });
 
   it("matches part of a skill name, but not part of a word", () => {
-    expect(score(run(requirement("req-1", "must", "Kafka")), "skl-kafka")).toBe(2);
+    expect(score(run(requirement("req-1", "must", "Script")), "skl-typescript")).toBeUndefined();
+    expect(score(run(requirement("req-1", "must", "Kafka")), "skl-kafka")).toBeGreaterThan(1);
     expect(run(requirement("req-1", "must", "JavaScript"))).toEqual([]);
   });
 
@@ -76,6 +77,11 @@ describe("scoring", () => {
       asOf: "2060-01-01",
     });
     expect(score(old, "ach-tecnobanca-batch")).toBe(1);
+  });
+
+  it("ranks a skill no longer in use below one in use", () => {
+    const hits = run(requirement("req-1", "must", "Kafka"), requirement("req-2", "must", "Docker"));
+    expect(score(hits, "skl-kafka")).toBeLessThan(score(hits, "skl-docker") ?? NaN);
   });
 
   it("treats an undated achievement of the current job as current", () => {

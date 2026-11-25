@@ -17,11 +17,24 @@ it("states everything an achievement proves, and where it belongs", () => {
       "Reduced the median deployment time from 45 to 8 minutes by rewriting the CI/CD pipelines.",
       "median deployment time before: 45 minutes",
       "median deployment time after: 8 minutes",
-      "Skills used: CI/CD (GitHub Actions, GitLab CI); Kubernetes (K8s)",
+      "Skills used: CI/CD; Kubernetes",
       "Date: 2022-11",
       "Achieved as Senior Platform Engineer at LagoNube SA",
     ],
   });
+});
+
+it("never states an alias, which is only a way to find a skill", () => {
+  const kb = exampleKb();
+  for (const skill of kb.skills) skill.aliases = ["SomeAlias"];
+  expect(JSON.stringify(listSources(kb, "2026-01-15", "en"))).not.toContain("SomeAlias");
+  expect(find("skl-kafka").facts).toEqual([
+    "Skill: Apache Kafka",
+    "Category: Messaging",
+    "Level: working",
+    "First used: 2019-09",
+    "Last used: 2021-12",
+  ]);
 });
 
 it("uses translations where they exist, and the original elsewhere", () => {
