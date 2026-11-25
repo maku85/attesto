@@ -141,6 +141,16 @@ describe("what the LLM sees", () => {
     expect(prompt).not.toMatch(/Giulia|example\.com|C permit/);
   });
 
+  it("includes the other achievements of the current role in a CV, but not in a letter", async () => {
+    const cv = draftPrompt(await run({ draft: [good] }));
+    const letter = draftPrompt(
+      await run({ draft: [["letter-body", "x.", ["skl-kubernetes"]]] }, { type: "letter" }),
+    );
+    expect(cv).toContain("[ach-lagonube-mentoring]");
+    expect(letter).not.toContain("[ach-lagonube-mentoring]");
+    expect(cv).not.toContain("[ach-cantiere-offline]");
+  });
+
   it("includes statements in a letter, where everything goes into one slot", async () => {
     const result = await run(
       { draft: [["letter-body", "I like platforms.", ["stm-platform-motivation"]]] },

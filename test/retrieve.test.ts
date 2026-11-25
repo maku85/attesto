@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { retrieve } from "../src/pipeline/retrieve.ts";
+import { currentAchievements, retrieve } from "../src/pipeline/retrieve.ts";
 import { analysis, exampleKb, requirement } from "./fixtures.ts";
 
 const asOf = "2026-01-15";
@@ -107,5 +107,39 @@ describe("scoring", () => {
     for (const list of [reversed.experiences, reversed.projects, reversed.skills]) list.reverse();
     for (const owner of reversed.experiences) owner.achievements.reverse();
     expect(retrieve(reversed, analysis(...requirements), { asOf })).toEqual(run(...requirements));
+  });
+});
+
+describe("currentAchievements", () => {
+  const current = exampleKb().experiences[0]!.achievements.map(({ id }) => id);
+
+  it("adds what the current role is missing, newest first", () => {
+    const added = currentAchievements(exampleKb(), new Set(["ach-lagonube-deploy-time"]));
+    expect(added).toHaveLength(current.length - 1);
+    // Undated achievements of a current role count as current.
+    expect(added.slice(0, 2)).toEqual(["ach-lagonube-mentoring", "ach-lagonube-docs-assistant"]);
+    expect(added.every((id) => current.includes(id))).toBe(true);
+  });
+
+  it("counts the matched ones towards the limit", () => {
+    const matched = new Set(current.slice(0, 3));
+    expect(currentAchievements(exampleKb(), matched, 4)).toHaveLength(1);
+    expect(currentAchievements(exampleKb(), matched, 2)).toEqual([]);
+  });
+
+  it("uses the latest role when none is current, and all current ones", () => {
+    const past = exampleKb();
+    past.experiences[0]!.end = "2020-01";
+    expect(currentAchievements(past, new Set())).toContain("ach-pagofacile-iac");
+    expect(currentAchievements(past, new Set())).not.toContain("ach-lagonube-mentoring");
+    const two = exampleKb();
+    two.experiences[1]!.end = null;
+    expect(currentAchievements(two, new Set())).toEqual(
+      expect.arrayContaining(["ach-pagofacile-iac", "ach-lagonube-mentoring"]),
+    );
+  });
+
+  it("works without experiences", () => {
+    expect(currentAchievements({ ...exampleKb(), experiences: [] }, new Set())).toEqual([]);
   });
 });

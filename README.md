@@ -156,6 +156,7 @@ Most labels were written together with the judge's prompt and flatter it.
 
 - No telemetry, and no network access except the Anthropic API.
 - Sent to the API: the posting, the entries that match it with the jobs and projects they belong to,
+  achievements of the current role (for CVs),
   durations derived from dates, your statements (for letters), and the claims. Never sent: the fields
   for name, contacts, nationality, work permit and birth date, and all other entries.
 - An MCP client can read every entry through `kb_search`, `kb_get` and resources, and passes it to its own

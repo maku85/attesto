@@ -144,7 +144,7 @@ function sentence(sources: Source[], analysis: JobAnalysis) {
 
 function describePosting({ title, seniority, requirements }: JobAnalysis): string {
   const lines = requirements.map(({ id, kind, text }) => `[${id}] (${kind}) ${text}`);
-  return `<posting>\n${asData([`${title}, ${seniority}`, ...lines].join("\n"))}\n</posting>`;
+  return `<posting>\n${asData([`${title ?? "Position"}, ${seniority}`, ...lines].join("\n"))}\n</posting>`;
 }
 
 function describeSources(sources: Source[]): string {

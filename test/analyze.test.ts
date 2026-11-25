@@ -35,6 +35,15 @@ it.each([
   expect(provider.requests).toEqual([]);
 });
 
+it.each(["unspecified", "", " Unspecified ", "N/A"])("reads %j as not stated", async (value) => {
+  const unnamed = { ...answer, title: value, company: value, location: value };
+  expect(await analyzePosting(new FakeProvider(unnamed), "model", "We look for…")).toMatchObject({
+    title: null,
+    company: null,
+    location: null,
+  });
+});
+
 it("rejects an analysis without requirements", async () => {
   const provider = new FakeProvider({ ...answer, requirements: [] });
   await expect(analyzePosting(provider, "model", "We look for…")).rejects.toThrow();

@@ -66,6 +66,29 @@ export function retrieve(
   });
 }
 
+/**
+ * Achievements of the current role, or else the latest one, that answer no requirement. A CV that left
+ * them out would hide what the person does now. Newest first, up to `limit` with the matched ones.
+ */
+export function currentAchievements(kb: KnowledgeBase, matched: Set<string>, limit = 8): string[] {
+  const latestEnd =
+    kb.experiences
+      .map(({ end }) => end ?? "9999")
+      .sort()
+      .at(-1) ?? "";
+  return kb.experiences
+    .filter(({ end }) => (end ?? "9999") === latestEnd)
+    .flatMap(({ achievements }) => {
+      const rest = achievements.filter(({ id }) => !matched.has(id));
+      const places = Math.max(0, limit - (achievements.length - rest.length));
+      const newest = (date: string | undefined) => date ?? "9999";
+      return rest
+        .sort((a, b) => compareIds(newest(b.date), newest(a.date)) || compareIds(a.id, b.id))
+        .slice(0, places)
+        .map(({ id }) => id);
+    });
+}
+
 /** "Kafka" matches the skill "Apache Kafka", and "Kubernetes operations" the skill "Kubernetes". */
 function matchingSkills(entries: Entry[], phrases: string[][]): Set<string> {
   const matches = (name: string[]) =>

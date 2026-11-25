@@ -6,7 +6,7 @@ import { completeRun, createRun, failRun } from "../store/runs.ts";
 import type { JobAnalysis } from "./analyze.ts";
 import type { Document, Tone, Verification } from "./document.ts";
 import { draft, redraft, type DraftRequest } from "./draft.ts";
-import { retrieve } from "./retrieve.ts";
+import { currentAchievements, retrieve } from "./retrieve.ts";
 import { checkClaims, passes, type PlacedClaim, type VerifyContext } from "./verify/index.ts";
 
 export type RunRequest = {
@@ -101,6 +101,7 @@ export async function generateDocument(request: RunRequest): Promise<RunResult> 
 function selectSources({ kb, job, type, asOf }: RunRequest): Set<string> {
   const matched = new Set(retrieve(kb, job.analysis, { asOf }).map(({ id }) => id));
   if (matched.size === 0) return matched;
+  if (type === "cv") for (const id of currentAchievements(kb, matched)) matched.add(id);
   const all = listSources(kb, asOf, kb.person.defaultLanguage);
   const owners = new Set(
     all.filter(({ id }) => matched.has(id)).flatMap(({ ownerId }) => ownerId ?? []),

@@ -25,9 +25,9 @@ export type Labels = {
   until: string;
   validUntil: string;
   expired: string;
-  subject: (title: string) => string;
+  subject: (title: string | null) => string;
   salutation: string;
-  opening: (title: string, company: string | null) => string;
+  opening: (title: string | null, company: string | null) => string;
   invitation: string;
   closing: string;
 };
@@ -58,10 +58,10 @@ export const LABELS: Record<Lang, Labels> = {
     until: "fino a",
     validUntil: "valida fino a",
     expired: "scaduta",
-    subject: (title) => `Candidatura: ${title}`,
+    subject: (title) => (title ? `Candidatura: ${title}` : "Candidatura"),
     salutation: "Gentili Signore, egregi Signori,",
     opening: (title, company) =>
-      `mi candido per la posizione «${title}»${company ? ` presso ${company}` : ""}.`,
+      `mi candido per la posizione ${title ? `«${title}»` : "pubblicata"}${company ? ` presso ${company}` : ""}.`,
     invitation: "Resto volentieri a disposizione per un colloquio.",
     closing: "Cordiali saluti",
   },
@@ -95,10 +95,10 @@ export const LABELS: Record<Lang, Labels> = {
     until: "until",
     validUntil: "valid until",
     expired: "expired",
-    subject: (title) => `Application: ${title}`,
+    subject: (title) => (title ? `Application: ${title}` : "Application"),
     salutation: "Dear Sir or Madam,",
     opening: (title, company) =>
-      `I am applying for the position “${title}”${company ? ` at ${company}` : ""}.`,
+      `I am applying for the ${title ? `position “${title}”` : "advertised position"}${company ? ` at ${company}` : ""}.`,
     invitation: "I would welcome the opportunity to discuss this in an interview.",
     closing: "Kind regards",
   },
@@ -133,10 +133,10 @@ export const LABELS: Record<Lang, Labels> = {
     until: "bis",
     validUntil: "gültig bis",
     expired: "abgelaufen",
-    subject: (title) => `Bewerbung: ${title}`,
+    subject: (title) => (title ? `Bewerbung: ${title}` : "Bewerbung"),
     salutation: "Sehr geehrte Damen und Herren",
     opening: (title, company) =>
-      `Ich bewerbe mich um die Stelle «${title}»${company ? ` bei ${company}` : ""}.`,
+      `Ich bewerbe mich um die ${title ? `Stelle «${title}»` : "ausgeschriebene Stelle"}${company ? ` bei ${company}` : ""}.`,
     invitation: "Über die Einladung zu einem Gespräch freue ich mich.",
     closing: "Freundliche Grüsse",
   },

@@ -194,6 +194,20 @@ describe("letter", () => {
     expect(html({ type: "letter" })).toContain("Giulia Esempio<br>Lugano, Switzerland<br>");
   });
 
+  it.each<[Lang, string, string]>([
+    ["it", "## Candidatura\n", "mi candido per la posizione pubblicata presso Esempio SA."],
+    ["en", "## Application\n", "I am applying for the advertised position at Esempio SA."],
+    ["de", "## Bewerbung\n", "Ich bewerbe mich um die ausgeschriebene Stelle bei Esempio SA."],
+  ])("does without a title in %s", (language, subject, opening) => {
+    const output = markdown(
+      { type: "letter", language },
+      { analysis: { ...analysis(), title: null } },
+    );
+    expect(output).toContain(subject);
+    expect(output).toContain(opening);
+    expect(output).not.toContain("null");
+  });
+
   it("does without a company", () => {
     const output = markdown({ type: "letter" }, { analysis: { ...analysis(), company: null } });
     expect(output).toContain("“Platform Engineer”.");
