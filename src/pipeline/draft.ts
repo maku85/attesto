@@ -32,8 +32,9 @@ const RULES = `Rules for every sentence:
   No added effects, causes, purposes, quality words or larger roles. Shared work stays shared.
 - Numbers and durations appear as the sources state them. Do not calculate, round or estimate. Write
   dates in words: "January 2022", not "2022-01".
-- It can be understood and checked on its own. Name the employer or project instead of referring to
-  another sentence with words such as "in the same role" or "there".
+- It can be understood and checked on its own, without referring to another sentence with words such
+  as "in the same role" or "there".
+- The day a duration was counted ("as of") is for checking only: leave it out.
 - Do not append the skills used unless they matter to the posting and the sentence needs them.
 - Do not present an expired certification as valid.
 - A plain sentence that is fully supported is better than an impressive one that is not.
@@ -46,9 +47,9 @@ const SLOT_RULES: Record<Document["type"], string> = {
 - "summary": two or three sentences that connect the candidate to the posting.
 - Every other slot is an experience or project: one to five bullet sentences, the most relevant
   first. Leave out a slot that has nothing relevant. Role, employer, location and period
-  are printed elsewhere, so do not repeat them.`,
+  are printed above it, so do not repeat them.`,
   letter: `Write the body of a cover letter in the first person: five to nine connected sentences
-in "letter-body". Salutation, opening, closing and the name of the company are printed elsewhere.
+in "letter-body". Name the employer or project a result belongs to. Salutation, opening, closing and the name of the company are printed elsewhere.
 Use the candidate's own statements only for motivation and availability. Choose wording that does not
 reveal the candidate's gender.`,
 };

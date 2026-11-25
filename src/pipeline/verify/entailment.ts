@@ -35,7 +35,7 @@ These are not supported:
 
 These do not count against a sentence:
 - Translation, paraphrase, word order, or leaving details out, unless that changes the meaning.
-- Equivalent units and notations.
+- Equivalent units and notations, and a duration without the day it was counted.
 - A first-person subject, or an implied one.`;
 
 /** Asks about one claim at a time, with its sources only: no posting and no other claims. */
