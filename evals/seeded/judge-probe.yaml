@@ -1,0 +1,185 @@
+# Claims about the example knowledge base that pass the structure and number checks, so that only the
+# judge can tell them apart. "supported" is the label of a person, not of a model.
+- {
+    id: true-paraphrase,
+    language: en,
+    supported: true,
+    sources: [ach-lagonube-deploy-time],
+    text: Rewrote the CI/CD pipelines and so reduced the median deployment time from 45 to 8 minutes.,
+  }
+- {
+    id: true-italian,
+    language: it,
+    supported: true,
+    sources: [ach-lagonube-cloud-cost],
+    text: Ho ridotto la spesa cloud mensile del 27% dimensionando correttamente i node pool.,
+  }
+- {
+    id: true-translated,
+    language: de,
+    supported: true,
+    sources: [ach-lagonube-k8s-migration],
+    text: Habe zusammen mit zwei Kollegen 32 Dienste von virtuellen Maschinen nach Kubernetes migriert.,
+  }
+- {
+    id: true-contribution,
+    language: en,
+    supported: true,
+    sources: [ach-lagonube-docs-assistant],
+    text: Contributed to an internal documentation assistant.,
+  }
+- {
+    id: true-duration,
+    language: en,
+    supported: true,
+    sources: [drv-exp-pagofacile-2019],
+    text: Worked at PagoFacile AG for three years.,
+  }
+- {
+    id: true-units,
+    language: de,
+    supported: true,
+    sources: [ach-tecnobanca-batch],
+    text: Den nächtlichen Abrechnungslauf von 5 auf 1.5 Stunden verkürzt.,
+  }
+- {
+    id: true-first,
+    language: en,
+    supported: true,
+    sources: [ach-cantiere-ci],
+    text: Set up the company's first automated build and test pipeline.,
+  }
+- {
+    id: true-motivation,
+    language: it,
+    supported: true,
+    sources: [stm-platform-motivation],
+    text: Mi interessa costruire piattaforme che permettano ad altri team di rilasciare in autonomia.,
+  }
+- {
+    id: true-context,
+    language: en,
+    supported: true,
+    sources: [ach-pagofacile-iac],
+    text: Moved the AWS infrastructure of the payments team at PagoFacile AG to Terraform.,
+  }
+- {
+    id: true-expired,
+    language: en,
+    supported: true,
+    sources: [cert-k8s-admin-2023],
+    text: Obtained a Kubernetes Administrator certification in 2023 that has since expired.,
+  }
+- {
+    id: true-level,
+    language: en,
+    supported: true,
+    sources: [skl-postgresql],
+    text: Has advanced PostgreSQL skills.,
+  }
+- {
+    id: true-omission,
+    language: it,
+    supported: true,
+    sources: [ach-lagonube-mentoring],
+    text: Ho seguito come mentor alcuni ingegneri junior.,
+  }
+
+- {
+    id: false-led,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-docs-assistant],
+    text: Led the development of an internal documentation assistant.,
+  }
+- {
+    id: false-sole-credit,
+    language: de,
+    supported: false,
+    sources: [ach-lagonube-k8s-migration],
+    text: Habe 32 Dienste im Alleingang nach Kubernetes migriert.,
+  }
+- {
+    id: false-effect,
+    language: en,
+    supported: false,
+    sources: [ach-pagofacile-iac],
+    text: Moved the AWS infrastructure of the payments team to Terraform and eliminated configuration errors.,
+  }
+- {
+    id: false-quality,
+    language: it,
+    supported: false,
+    sources: [ach-cantiere-ci],
+    text: "Ho creato la prima pipeline automatizzata dell'azienda, migliorando notevolmente la qualità del software.",
+  }
+- {
+    id: false-level,
+    language: en,
+    supported: false,
+    sources: [skl-kafka],
+    text: Is an expert in Apache Kafka.,
+  }
+- {
+    id: false-skill,
+    language: en,
+    supported: false,
+    sources: [ach-pagofacile-throughput, skl-python],
+    text: Redesigned the payment event pipeline in Python.,
+  }
+- {
+    id: false-employer,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-k8s-migration, exp-pagofacile-2019],
+    text: Migrated 32 services to Kubernetes at PagoFacile AG.,
+  }
+- {
+    id: false-object,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-mentoring],
+    text: Mentored 3 senior engineers.,
+  }
+- {
+    id: false-rate,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-alerting],
+    text: Reduced pager alerts from 120 to 35 per week.,
+  }
+- {
+    id: false-direction,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-alerting],
+    text: Handled a rise in pager alerts from 35 to 120 per month.,
+  }
+- {
+    id: false-vague-amount,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-cloud-cost],
+    text: Halved monthly cloud spending.,
+  }
+- {
+    id: false-expired,
+    language: en,
+    supported: false,
+    sources: [cert-k8s-admin-2023],
+    text: Holds a valid Kubernetes Administrator certification.,
+  }
+- {
+    id: false-self-praise,
+    language: it,
+    supported: false,
+    sources: [stm-platform-motivation],
+    text: "Sono un'ottima progettista di piattaforme.",
+  }
+- {
+    id: false-years,
+    language: it,
+    supported: false,
+    sources: [skl-terraform],
+    text: Uso Terraform ogni giorno da molti anni in ambienti critici.,
+  }
