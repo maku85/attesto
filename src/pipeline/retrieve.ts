@@ -70,7 +70,7 @@ export function retrieve(
  * Achievements of the current role, or else the latest one, that answer no requirement. A CV that left
  * them out would hide what the person does now. Newest first, up to `limit` with the matched ones.
  */
-export function currentAchievements(kb: KnowledgeBase, matched: Set<string>, limit = 8): string[] {
+export function currentAchievements(kb: KnowledgeBase, matched: Set<string>, limit = 16): string[] {
   const latestEnd =
     kb.experiences
       .map(({ end }) => end ?? "9999")
