@@ -1,0 +1,5 @@
+# - id: edu-school-2014
+#   institution: School
+#   title: Degree
+#   start: 2011
+#   end: 2014              # null means current

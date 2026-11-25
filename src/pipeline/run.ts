@@ -4,7 +4,7 @@ import { hashSource, listSources, type Source } from "../kb/sources.ts";
 import { LlmError, type LlmProvider } from "../llm/provider.ts";
 import { completeRun, createRun, failRun } from "../store/runs.ts";
 import type { JobAnalysis } from "./analyze.ts";
-import type { Document, Verification } from "./document.ts";
+import type { Document, Tone, Verification } from "./document.ts";
 import { draft, redraft, type DraftRequest } from "./draft.ts";
 import { retrieve } from "./retrieve.ts";
 import { checkClaims, passes, type PlacedClaim, type VerifyContext } from "./verify/index.ts";
@@ -23,6 +23,10 @@ export type RunRequest = {
   asOf: string;
   /** Whether rejected claims get one rewrite before they are dropped. */
   regenerate?: boolean;
+  /** For letters. */
+  tone?: Tone;
+  /** Called at the start of each step, which can take a while. */
+  onProgress?: (step: string) => void;
 };
 
 export type RunResult = { document: Document; verifications: Verification[] };
@@ -46,6 +50,7 @@ export async function generateDocument(request: RunRequest): Promise<RunResult> 
     asOf,
     draftModel: request.draftModel,
     judgeModel: request.judgeModel,
+    tone: request.tone ?? null,
     sources,
   });
 
@@ -58,6 +63,7 @@ export async function generateDocument(request: RunRequest): Promise<RunResult> 
         language,
         analysis: job.analysis,
         sources: inLanguage(language),
+        tone: request.tone,
       },
       {
         provider,
@@ -67,6 +73,7 @@ export async function generateDocument(request: RunRequest): Promise<RunResult> 
         sourceLanguage: defaultLanguage,
       },
       request.regenerate ?? true,
+      request.onProgress,
     );
     const slots = [...new Set(accepted.map(({ slot }) => slot))];
     const document: Document = {
@@ -112,9 +119,14 @@ async function draftAndVerify(
   request: DraftRequest,
   context: VerifyContext,
   regenerate: boolean,
+  onProgress: RunRequest["onProgress"],
 ): Promise<{ accepted: PlacedClaim[]; verifications: Verification[] }> {
-  const first = await checkClaims(await draft(request), context);
+  onProgress?.("Drafting");
+  const drafted = await draft(request);
+  onProgress?.(`Verifying ${drafted.length} claims`);
+  const first = await checkClaims(drafted, context);
   const rejected = first.filter(({ checks }) => !passes(checks));
+  if (regenerate && rejected.length > 0) onProgress?.(`Rewriting ${rejected.length} claims`);
   const rewritten = regenerate && rejected.length > 0 ? await tryRedraft(request, rejected) : [];
   const second = await checkClaims(rewritten, context);
   const retried = new Map(second.map((result) => [result.placed.claim.id, result]));

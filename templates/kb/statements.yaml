@@ -1,0 +1,4 @@
+# Your own words for cover letters. A statement can support interest or availability, and nothing else.
+# - id: stm-motivation
+#   kind: motivation       # or availability
+#   text: I am interested in ...

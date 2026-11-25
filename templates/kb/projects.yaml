@@ -1,0 +1,6 @@
+# - id: prj-name
+#   name: name
+#   url: https://...
+#   description: One factual sentence.
+#   tech: [skl-something]
+#   achievements: []       # as in experiences.yaml

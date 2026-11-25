@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Client } from "@modelcontextprotocol/client";
@@ -42,7 +42,7 @@ async function call(name: string, args: Record<string, unknown> = {}) {
 describe("in process", () => {
   async function connect(kbDir: string, provider: () => LlmProvider) {
     const [clientSide, serverSide] = InMemoryTransport.createLinkedPair();
-    await createServer({ kbDir, dbPath, provider }).connect(serverSide);
+    await createServer({ kbDir, dbPath, outDir: join(dir, "out"), provider }).connect(serverSide);
     await client.connect(clientSide);
   }
   const noProvider = () => {
@@ -104,6 +104,51 @@ describe("in process", () => {
     });
   });
 
+  it("generates a document from a stored analysis, with progress", async () => {
+    const provider = new PipelineProvider({
+      draft: [
+        ["letter-body", "Reduced the median deployment time.", ["ach-lagonube-deploy-time"]],
+        ["letter-body", "Cut costs by 90%.", ["ach-lagonube-cloud-cost"]],
+      ],
+    });
+    await connect(EXAMPLE_KB, () => provider);
+    const db = openDb(dbPath);
+    const { job } = runRequest(db, provider);
+    db.close();
+
+    const steps: (string | undefined)[] = [];
+    const args = { jobAnalysisId: job.id, language: "it", market: "ch-it", tone: "formal" };
+    const result = await client.callTool(
+      { name: "letter_generate", arguments: args },
+      { onprogress: ({ message }) => steps.push(message) },
+    );
+    const block = result.content[0];
+    const text = block?.type === "text" ? block.text : "";
+    expect(JSON.parse(text)).toMatchObject({
+      sections: [
+        { slot: "letter-body", claims: [{ text: "Reduced the median deployment time." }] },
+      ],
+      rejected: [{ text: "Cut costs by 90%.", decision: "dropped" }],
+    });
+    expect(steps).toContain("Drafting");
+    // Personal details are in the files, not in the answer.
+    expect(text).not.toMatch(/giulia@|\+41|Permesso/);
+    const [file] = (JSON.parse(text) as { files: string[] }).files;
+    expect(readFileSync(file!, "utf8")).toContain("giulia@example.com");
+  });
+
+  it.each([
+    ["cv_generate", {}],
+    ["cv_generate", { jobText: "x", jobAnalysisId: "y" }],
+    ["letter_generate", { jobAnalysisId: "nope" }],
+    ["letter_generate", { jobAnalysisId: "nope", tone: "pushy" }],
+  ])("%s rejects %j", async (name, args) => {
+    await connect(EXAMPLE_KB, () => new FakeProvider());
+    expect(await call(name, { language: "en", market: "ch-en", ...args })).toMatchObject({
+      isError: true,
+    });
+  });
+
   it("serves the knowledge base without an LLM", async () => {
     await connect(EXAMPLE_KB, noProvider);
     const search = await call("kb_search", { query: "kafka", filters: { types: ["skill"] } });
@@ -148,11 +193,13 @@ it("speaks MCP over stdio through the CLI", async () => {
   );
   const { tools } = await client.listTools();
   expect(tools.map(({ name }) => name).sort()).toEqual([
+    "cv_generate",
     "document_verify",
     "job_analyze",
     "kb_get",
     "kb_search",
     "kb_validate",
+    "letter_generate",
     "run_get",
   ]);
   expect(JSON.parse((await call("kb_get", { id: "ach-cantiere-ci" })).text)).toMatchObject({

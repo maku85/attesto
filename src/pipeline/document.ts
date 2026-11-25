@@ -2,6 +2,8 @@ import { z } from "zod";
 import { Lang } from "../kb/schema.ts";
 
 export const DOCUMENT_TYPES = ["cv", "letter"] as const;
+export const TONES = ["formal", "warm", "direct"] as const;
+export type Tone = (typeof TONES)[number];
 export const MARKETS = ["ch-it", "ch-en", "ch-de"] as const;
 
 /** One sentence, the entries it is derived from, and the requirements it answers. */

@@ -4,7 +4,7 @@ import type { Source } from "../kb/sources.ts";
 import { asData } from "../llm/prompt.ts";
 import type { LlmProvider } from "../llm/provider.ts";
 import type { JobAnalysis } from "./analyze.ts";
-import type { Claim, Document } from "./document.ts";
+import type { Claim, Document, Tone } from "./document.ts";
 import type { Checks, PlacedClaim } from "./verify/index.ts";
 import { describe } from "./verify/entailment.ts";
 import { inScope } from "./verify/structural.ts";
@@ -17,9 +17,14 @@ export type DraftRequest = {
   analysis: JobAnalysis;
   /** In the target language where a translation exists. */
   sources: Source[];
+  tone?: Tone;
 };
 
-const LANGUAGE_NAME: Record<Lang, string> = { it: "Italian", en: "English", de: "German" };
+const LANGUAGE_NAME: Record<Lang, string> = {
+  it: "Italian",
+  en: "English",
+  de: 'German in Swiss spelling, with "ss" instead of "ß"',
+};
 
 const RULES = `Rules for every sentence:
 - It is exactly one sentence, about the candidate only. Avoid abbreviations with full stops.
@@ -39,7 +44,8 @@ const SLOT_RULES: Record<Document["type"], string> = {
   first. Leave out a slot that has nothing relevant. Role, employer and dates are printed elsewhere.`,
   letter: `Write the body of a cover letter in the first person: five to nine connected sentences
 in "letter-body". Salutation, opening, closing and the name of the company are printed elsewhere.
-Use the candidate's own statements only for motivation and availability.`,
+Use the candidate's own statements only for motivation and availability. Choose wording that does not
+reveal the candidate's gender.`,
 };
 
 /** The places text can go, with the sources each may cite. */
@@ -64,7 +70,7 @@ export async function draft(request: DraftRequest): Promise<PlacedClaim[]> {
   });
   const { sections } = await provider.generate({
     model,
-    system: `${SLOT_RULES[type]}\nWrite in ${LANGUAGE_NAME[language]}.\n\n${RULES}`,
+    system: `${SLOT_RULES[type]}\nWrite in ${LANGUAGE_NAME[language]}.${toneRule(request.tone)}\n\n${RULES}`,
     prompt: [describePosting(analysis), describeSources(sources), describeSlots(slots)].join(
       "\n\n",
     ),
@@ -112,6 +118,11 @@ ${RULES}`,
     const replacement = claims.find(({ id }) => id === claim.id);
     return replacement ? [{ slot, claim: replacement }] : [];
   });
+}
+
+/** The tone changes the wording only; what may be said is the same. */
+function toneRule(tone: Tone | undefined): string {
+  return tone ? ` Use a ${tone} tone, without adding claims or quality words.` : "";
 }
 
 /** The enums keep the model from inventing IDs; the verifier checks them again. */

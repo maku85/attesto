@@ -14,7 +14,8 @@
   },
   "files": [
     "dist",
-    "migrations"
+    "migrations",
+    "templates"
   ],
   "scripts": {
     "attesto": "node --disable-warning=ExperimentalWarning src/cli/main.ts",

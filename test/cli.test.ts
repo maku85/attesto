@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { expect, it } from "vitest";
@@ -80,6 +80,25 @@ it.each([
   [["analyze"]],
   [["verify"]],
   [["runs"]],
+  [["generate"]],
+  [["generate", "--type", "memo"]],
+  [["generate", "--job", "x", "--type", "cv", "--lang", "fr", "--market", "ch-it"]],
+  [["generate", "--type", "cv", "--lang", "it", "--market", "ch-it"]],
+  [
+    [
+      "generate",
+      "--job",
+      "x",
+      "--type",
+      "cv",
+      "--lang",
+      "it",
+      "--market",
+      "ch-it",
+      "--tone",
+      "warm",
+    ],
+  ],
   [["runs", "show"]],
   [["runs", "list", "x"]],
   [["search", "x", "--type", "nope"]],
@@ -104,6 +123,18 @@ it("rejects a file that is not an attesto document", () => {
   const { status, stderr } = attesto(["verify", join(ROOT, "package.json"), "--kb", EXAMPLE_KB]);
   expect(stderr).toContain("is not an attesto document");
   expect(status).toBe(1);
+});
+
+it("creates a knowledge base that is valid, and never touches an existing one", () => {
+  const dir = mkdtempSync(join(tmpdir(), "attesto-init-"));
+  const kb = join(dir, "kb");
+  expect(attesto(["init", "--kb", kb])).toMatchObject({ status: 0 });
+  expect(attesto(["validate", "--kb", kb])).toMatchObject({ status: 0 });
+  writeFileSync(join(kb, "skills.yaml"), "# mine\n");
+  const again = attesto(["init", "--kb", kb]);
+  expect(again).toMatchObject({ status: 1, stderr: `${kb} is not empty\n` });
+  expect(readFileSync(join(kb, "skills.yaml"), "utf8")).toBe("# mine\n");
+  rmSync(dir, { recursive: true });
 });
 
 it("prints help", () => {

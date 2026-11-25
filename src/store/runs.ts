@@ -1,11 +1,12 @@
 import { randomUUID } from "node:crypto";
 import type { DatabaseSync } from "node:sqlite";
-import type { Document, Verification } from "../pipeline/document.ts";
+import type { Document, Tone, Verification } from "../pipeline/document.ts";
 
 type NewRun = Pick<Document, "type" | "language" | "market" | "asOf" | "sources"> & {
   jobAnalysisId: string;
   draftModel: string;
   judgeModel: string;
+  tone: Tone | null;
 };
 export type RunSummary = {
   id: string;
@@ -19,6 +20,7 @@ export type Run = RunSummary &
   Omit<NewRun, keyof RunSummary> & {
     error: string | null;
     document: Document | null;
+    outputHashes: Record<string, string> | null;
     verifications: Verification[];
   };
 
@@ -26,8 +28,8 @@ export function createRun(db: DatabaseSync, run: NewRun): string {
   const id = randomUUID();
   db.prepare(
     `INSERT INTO runs (id, created_at, status, job_analysis_id, type, language, market, as_of,
-       draft_model, judge_model, sources)
-     VALUES (?, ?, 'running', ?, ?, ?, ?, ?, ?, ?, ?)`,
+       draft_model, judge_model, tone, sources)
+     VALUES (?, ?, 'running', ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     new Date().toISOString(),
@@ -38,6 +40,7 @@ export function createRun(db: DatabaseSync, run: NewRun): string {
     run.asOf,
     run.draftModel,
     run.judgeModel,
+    run.tone,
     JSON.stringify(run.sources),
   );
   return id;
@@ -80,6 +83,14 @@ export function failRun(db: DatabaseSync, id: string, error: string): void {
   db.prepare("UPDATE runs SET status = 'failed', error = ? WHERE id = ?").run(error, id);
 }
 
+export function storeOutputHashes(
+  db: DatabaseSync,
+  id: string,
+  hashes: Record<string, string>,
+): void {
+  db.prepare("UPDATE runs SET output_hashes = ? WHERE id = ?").run(JSON.stringify(hashes), id);
+}
+
 const SUMMARY = "id, created_at AS createdAt, status, type, language, market";
 
 export function listRuns(db: DatabaseSync): RunSummary[] {
@@ -92,7 +103,8 @@ export function getRun(db: DatabaseSync, id: string): Run | undefined {
   const row = db
     .prepare(
       `SELECT ${SUMMARY}, error, job_analysis_id AS jobAnalysisId, as_of AS asOf,
-         draft_model AS draftModel, judge_model AS judgeModel, sources, document
+         draft_model AS draftModel, judge_model AS judgeModel, tone, sources, document,
+         output_hashes AS outputHashes
        FROM runs WHERE id = ?`,
     )
     .get(id);
@@ -104,7 +116,7 @@ export function getRun(db: DatabaseSync, id: string): Run | undefined {
     )
     .all(id);
   return {
-    ...parseColumns(row, "sources", "document"),
+    ...parseColumns(row, "sources", "document", "outputHashes"),
     verifications: verifications.map((verification) =>
       parseColumns(verification, "sources", "structural", "numeric", "entailment"),
     ),

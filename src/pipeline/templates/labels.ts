@@ -1,0 +1,129 @@
+import type { Lang } from "../../kb/schema.ts";
+
+export type Labels = {
+  cv: string;
+  photo: string;
+  location: string;
+  email: string;
+  phone: string;
+  links: string;
+  birthDate: string;
+  nationality: string;
+  workPermit: string;
+  profile: string;
+  experience: string;
+  projects: string;
+  skills: string;
+  education: string;
+  certifications: string;
+  languages: string;
+  native: string;
+  references: string;
+  certificates: string;
+  present: string;
+  until: string;
+  validUntil: string;
+  expired: string;
+  subject: (title: string) => string;
+  salutation: string;
+  opening: (title: string, company: string | null) => string;
+  invitation: string;
+  closing: string;
+};
+
+export const LABELS: Record<Lang, Labels> = {
+  it: {
+    cv: "Curriculum vitae",
+    photo: "Foto",
+    location: "Domicilio",
+    email: "E-mail",
+    phone: "Telefono",
+    links: "Link",
+    birthDate: "Data di nascita",
+    nationality: "Nazionalità",
+    workPermit: "Permesso di lavoro",
+    profile: "Profilo",
+    experience: "Esperienze professionali",
+    projects: "Progetti",
+    skills: "Competenze",
+    education: "Formazione",
+    certifications: "Certificazioni",
+    languages: "Lingue",
+    native: "madrelingua",
+    references: "Certificati di lavoro",
+    certificates: "I certificati di lavoro sono disponibili su richiesta.",
+    present: "oggi",
+    until: "fino a",
+    validUntil: "valida fino a",
+    expired: "scaduta",
+    subject: (title) => `Candidatura: ${title}`,
+    salutation: "Gentili Signore, egregi Signori,",
+    opening: (title, company) =>
+      `mi candido per la posizione «${title}»${company ? ` presso ${company}` : ""}.`,
+    invitation: "Resto volentieri a disposizione per un colloquio.",
+    closing: "Cordiali saluti",
+  },
+  en: {
+    cv: "Curriculum vitae",
+    photo: "Photo",
+    location: "Location",
+    email: "Email",
+    phone: "Phone",
+    links: "Links",
+    birthDate: "Date of birth",
+    nationality: "Nationality",
+    workPermit: "Work permit",
+    profile: "Profile",
+    experience: "Professional experience",
+    projects: "Projects",
+    skills: "Skills",
+    education: "Education",
+    certifications: "Certifications",
+    languages: "Languages",
+    native: "native",
+    references: "Work certificates",
+    certificates: "Work certificates are available on request.",
+    present: "present",
+    until: "until",
+    validUntil: "valid until",
+    expired: "expired",
+    subject: (title) => `Application: ${title}`,
+    salutation: "Dear Sir or Madam,",
+    opening: (title, company) =>
+      `I am applying for the position “${title}”${company ? ` at ${company}` : ""}.`,
+    invitation: "I would welcome the opportunity to discuss this in an interview.",
+    closing: "Kind regards",
+  },
+  // Swiss spelling: "ss" instead of "ß", and no comma after salutation and closing.
+  de: {
+    cv: "Lebenslauf",
+    photo: "Foto",
+    location: "Wohnort",
+    email: "E-Mail",
+    phone: "Telefon",
+    links: "Links",
+    birthDate: "Geburtsdatum",
+    nationality: "Nationalität",
+    workPermit: "Arbeitsbewilligung",
+    profile: "Profil",
+    experience: "Berufserfahrung",
+    projects: "Projekte",
+    skills: "Kenntnisse",
+    education: "Ausbildung",
+    certifications: "Zertifizierungen",
+    languages: "Sprachen",
+    native: "Muttersprache",
+    references: "Arbeitszeugnisse",
+    certificates: "Arbeitszeugnisse sind auf Anfrage erhältlich.",
+    present: "heute",
+    until: "bis",
+    validUntil: "gültig bis",
+    expired: "abgelaufen",
+    subject: (title) => `Bewerbung: ${title}`,
+    salutation: "Sehr geehrte Damen und Herren",
+    opening: (title, company) =>
+      `Ich bewerbe mich um die Stelle «${title}»${company ? ` bei ${company}` : ""}.`,
+    invitation: "Über die Einladung zu einem Gespräch freue ich mich.",
+    closing: "Freundliche Grüsse",
+  },
+};

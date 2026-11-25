@@ -1,0 +1,6 @@
+# - id: skl-something
+#   name: Something
+#   aliases: [Other name]
+#   category: Category
+#   level: working         # basic, working, advanced or expert
+#   since: 2020-01

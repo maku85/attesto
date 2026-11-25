@@ -1,32 +1,42 @@
 #!/usr/bin/env -S node --disable-warning=ExperimentalWarning
-import { readFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
 import { parseArgs } from "node:util";
 import { serveStdio } from "@modelcontextprotocol/server/stdio";
-import { ENTRY_TYPES, type EntryType } from "../kb/entries.ts";
+import { ENTRY_TYPES } from "../kb/entries.ts";
 import { loadKb, resolveKbDir } from "../kb/load.ts";
-import type { KnowledgeBase } from "../kb/schema.ts";
+import { LANGS, type KnowledgeBase } from "../kb/schema.ts";
 import { getEntry, searchKb } from "../kb/search.ts";
 import { AnthropicProvider } from "../llm/anthropic.ts";
 import { resolveJudgeModel, resolveModel } from "../llm/provider.ts";
 import { createServer } from "../mcp/server.ts";
-import { analyzePosting } from "../pipeline/analyze.ts";
-import { VerifiableDocument } from "../pipeline/document.ts";
+import { DOCUMENT_TYPES, MARKETS, TONES, VerifiableDocument } from "../pipeline/document.ts";
+import { analyzeAndStore, produce, today } from "../pipeline/produce.ts";
 import { verifyDocument } from "../pipeline/verify/document.ts";
 import { openDb, resolveDbPath } from "../store/db.ts";
-import { saveJobAnalysis } from "../store/jobs.ts";
 import { getRun, listRuns } from "../store/runs.ts";
 import { z } from "zod";
 
+// Resolves to the repository's templates/ from both src/cli and dist/cli.
+const KB_TEMPLATE = join(import.meta.dirname, "..", "..", "templates", "kb");
+
 const USAGE = `Usage:
+  attesto init [--kb <dir>]
   attesto validate [--kb <dir>]
   attesto search <query> [--type <type>]... [--skill <id>] [--kb <dir>]
   attesto get <id> [--kb <dir>]
   attesto analyze <posting.txt>
+  attesto generate --job <posting.txt> --type cv|letter --lang it|en|de
+      --market ch-it|ch-en|ch-de [--out <dir>] [--tone formal|warm|direct]
+      [--photo] [--no-regenerate] [--kb <dir>]
   attesto verify <document.json> [--kb <dir>]
   attesto runs list
   attesto runs show <id>
   attesto mcp [--kb <dir>]
 
+Documents are written to --out, else ./out. The MCP server writes to $ATTESTO_OUT, else
+~/.attesto/out.
 The knowledge base directory is --kb, else $ATTESTO_KB, else ~/.attesto/kb.
 Job analyses and runs are stored in $ATTESTO_DB, else ~/.attesto/attesto.db.
 The model is $ATTESTO_MODEL, else claude-opus-5-5. The judge is $ATTESTO_JUDGE_MODEL, else the model.`;
@@ -35,6 +45,15 @@ The model is $ATTESTO_MODEL, else claude-opus-5-5. The judge is $ATTESTO_JUDGE_M
 class UsageError extends Error {}
 
 const kbOption = { kb: { type: "string" } } as const;
+
+function init(args: string[]): void {
+  const { values } = parseArgs({ args, options: kbOption });
+  const dir = resolveKbDir(values.kb);
+  if (existsSync(dir) && readdirSync(dir).length > 0) throw new Error(`${dir} is not empty`);
+  mkdirSync(dir, { recursive: true, mode: 0o700 });
+  cpSync(KB_TEMPLATE, dir, { recursive: true });
+  console.log(`Created ${dir}. Edit the files, then run: attesto validate`);
+}
 
 function validate(args: string[]): void {
   const { values } = parseArgs({ args, options: kbOption });
@@ -56,12 +75,7 @@ function search(args: string[]): void {
       skill: { type: "string" },
     },
   });
-  const types = values.type?.map((type) => {
-    if (!(ENTRY_TYPES as readonly string[]).includes(type)) {
-      throw new UsageError(`Unknown type ${type}; expected one of ${ENTRY_TYPES.join(", ")}`);
-    }
-    return type as EntryType;
-  });
+  const types = values.type?.map((type) => oneOf("--type", type, ENTRY_TYPES));
   const hits = searchKb(requireKb(values.kb), positionals.join(" "), {
     types,
     skill: values.skill,
@@ -80,12 +94,69 @@ function get(args: string[]): void {
 async function analyze(args: string[]): Promise<void> {
   const { positionals } = parseArgs({ args, allowPositionals: true, options: {} });
   const posting = readFileSync(onlyArgument(positionals, "a posting file"), "utf8");
-  const model = resolveModel();
   const db = openDb(resolveDbPath());
   try {
-    const analysis = await analyzePosting(new AnthropicProvider(), model, posting);
-    const jobAnalysisId = saveJobAnalysis(db, { posting, model, analysis });
-    printJson({ jobAnalysisId, analysis });
+    const job = await analyzeAndStore(db, new AnthropicProvider(), posting);
+    printJson({ jobAnalysisId: job.id, analysis: job.analysis });
+  } finally {
+    db.close();
+  }
+}
+
+async function generate(args: string[]): Promise<void> {
+  const { values } = parseArgs({
+    args,
+    options: {
+      ...kbOption,
+      job: { type: "string" },
+      type: { type: "string" },
+      lang: { type: "string" },
+      market: { type: "string" },
+      out: { type: "string", default: "out" },
+      tone: { type: "string" },
+      photo: { type: "boolean", default: false },
+      "no-regenerate": { type: "boolean", default: false },
+    },
+  });
+  const type = oneOf("--type", values.type, DOCUMENT_TYPES);
+  const language = oneOf("--lang", values.lang, LANGS);
+  const market = oneOf("--market", values.market, MARKETS);
+  const tone = values.tone === undefined ? undefined : oneOf("--tone", values.tone, TONES);
+  if (!values.job) throw new UsageError("Expected --job");
+  if (tone && type === "cv") throw new UsageError("--tone applies to letters");
+  if (values.photo && type === "letter") throw new UsageError("--photo applies to CVs");
+  const posting = readFileSync(values.job, "utf8");
+  const kb = requireKb(values.kb);
+  const provider = new AnthropicProvider();
+  const onProgress = (step: string) => console.error(`${step}…`);
+
+  const db = openDb(resolveDbPath());
+  try {
+    onProgress("Analyzing the posting");
+    const job = await analyzeAndStore(db, provider, posting);
+    const { document, verifications, files } = await produce({
+      db,
+      provider,
+      draftModel: resolveModel(),
+      judgeModel: resolveJudgeModel(),
+      kb,
+      job,
+      type,
+      language,
+      market,
+      tone,
+      asOf: today(),
+      regenerate: !values["no-regenerate"],
+      outDir: values.out,
+      photo: values.photo,
+      onProgress,
+    });
+    const count = (decision: string) =>
+      verifications.filter((verification) => verification.decision === decision).length;
+    console.error(
+      `Run ${document.runId}: ${count("accepted")} claims accepted, ${count("dropped")} dropped`,
+    );
+    for (const file of files) console.log(file);
   } finally {
     db.close();
   }
@@ -138,6 +209,7 @@ function mcp(args: string[]): void {
   const config = {
     kbDir: resolveKbDir(values.kb),
     dbPath: resolveDbPath(),
+    outDir: process.env.ATTESTO_OUT || join(homedir(), ".attesto", "out"),
     provider: () => new AnthropicProvider(),
   };
   serveStdio(() => createServer(config), { onerror: (error) => console.error(error.message) });
@@ -153,6 +225,16 @@ function requireKb(flag: string | undefined): KnowledgeBase {
   throw new Error([...lines, "", `${lines.length} issue(s) in ${dir}`].join("\n"));
 }
 
+function oneOf<T extends string>(
+  name: string,
+  value: string | undefined,
+  allowed: readonly T[],
+): T {
+  const match = allowed.find((candidate) => candidate === value);
+  if (!match) throw new UsageError(`Expected ${name} to be one of ${allowed.join(", ")}`);
+  return match;
+}
+
 function onlyArgument(positionals: string[], what: string): string {
   const [value] = positionals;
   if (!value || positionals.length > 1) throw new UsageError(`Expected ${what}`);
@@ -164,10 +246,12 @@ function printJson(value: unknown): void {
 }
 
 const COMMANDS: Record<string, (args: string[]) => void | Promise<void>> = {
+  init,
   validate,
   search,
   get,
   analyze,
+  generate,
   verify,
   runs,
   mcp,

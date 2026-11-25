@@ -1,0 +1,14 @@
+# - id: exp-company-2021
+#   company: Company
+#   role: Role
+#   start: 2021-03
+#   end: null            # null means current
+#   location: Town
+#   description: One factual sentence.
+#   achievements:
+#     - id: ach-company-something
+#       statement: What you did, factual and without adjectives.
+#       metrics:
+#         - { value: 27, unit: "%", context: what the number measures }
+#       skills: [skl-something]
+#       date: 2022-06

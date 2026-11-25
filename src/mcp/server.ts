@@ -1,25 +1,37 @@
-import { McpServer, ResourceTemplate, type CallToolResult } from "@modelcontextprotocol/server";
+import {
+  McpServer,
+  ResourceTemplate,
+  type CallToolResult,
+  type ServerContext,
+} from "@modelcontextprotocol/server";
 import { z } from "zod";
 import { ENTRY_TYPES, listEntries } from "../kb/entries.ts";
 import { loadKb } from "../kb/load.ts";
-import type { KnowledgeBase } from "../kb/schema.ts";
+import { Lang, type KnowledgeBase } from "../kb/schema.ts";
 import { getEntry, searchKb } from "../kb/search.ts";
 import { resolveJudgeModel, resolveModel, type LlmProvider } from "../llm/provider.ts";
-import { analyzePosting } from "../pipeline/analyze.ts";
-import { VerifiableDocument } from "../pipeline/document.ts";
+import {
+  MARKETS,
+  TONES,
+  VerifiableDocument,
+  type Document,
+  type Tone,
+} from "../pipeline/document.ts";
+import { analyzeAndStore, produce, storedJob, today } from "../pipeline/produce.ts";
 import { changedSources, verifyDocument } from "../pipeline/verify/document.ts";
 import { openDb } from "../store/db.ts";
-import { saveJobAnalysis } from "../store/jobs.ts";
 import { getRun } from "../store/runs.ts";
 
 export type ServerConfig = {
   kbDir: string;
   dbPath: string;
+  /** Where generated documents are written. */
+  outDir: string;
   /** Called on first use, so that the knowledge-base tools work without an API key. */
   provider: () => LlmProvider;
 };
 
-export function createServer({ kbDir, dbPath, provider }: ServerConfig): McpServer {
+export function createServer({ kbDir, dbPath, outDir, provider }: ServerConfig): McpServer {
   const server = new McpServer({ name: "attesto", version: "0.0.0" });
   const readOnly = { readOnlyHint: true, openWorldHint: false };
 
@@ -82,16 +94,88 @@ export function createServer({ kbDir, dbPath, provider }: ServerConfig): McpServ
       annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
     },
     async ({ text }) => {
-      const model = resolveModel();
       const db = openDb(dbPath);
       try {
-        const analysis = await analyzePosting(provider(), model, text);
-        const jobAnalysisId = saveJobAnalysis(db, { posting: text, model, analysis });
-        return json({ jobAnalysisId, analysis });
+        const job = await analyzeAndStore(db, provider(), text);
+        return json({ jobAnalysisId: job.id, analysis: job.analysis });
       } finally {
         db.close();
       }
     },
+  );
+
+  const jobInput = {
+    jobText: z.string().optional().describe("The text of the posting"),
+    jobAnalysisId: z.string().optional().describe("From job_analyze, instead of jobText"),
+    language: Lang,
+    market: z.enum(MARKETS),
+  };
+  const oneJob = {
+    check: (input: JobInput) =>
+      (input.jobText === undefined) !== (input.jobAnalysisId === undefined),
+    error: "Give either jobText or jobAnalysisId",
+  };
+  const generated =
+    "Writes the document as Markdown and HTML with a provenance report to local files, and returns " +
+    "their paths, the verified claims and the rejected ones. Contact details stay in the files.";
+  const writes = { readOnlyHint: false, destructiveHint: false, openWorldHint: true };
+
+  const generate = async (
+    type: Document["type"],
+    { jobText, jobAnalysisId, language, market, tone }: JobInput & { tone?: Tone },
+    context: ServerContext,
+  ) => {
+    const kb = readKb(kbDir);
+    const onProgress = progressReporter(context);
+    const db = openDb(dbPath);
+    try {
+      if (jobText !== undefined) onProgress("Analyzing the posting");
+      const job =
+        jobText !== undefined
+          ? await analyzeAndStore(db, provider(), jobText)
+          : storedJob(db, jobAnalysisId ?? "");
+      const { document, verifications, files } = await produce({
+        db,
+        provider: provider(),
+        draftModel: resolveModel(),
+        judgeModel: resolveJudgeModel(),
+        kb,
+        job,
+        type,
+        language,
+        market,
+        tone,
+        asOf: today(),
+        outDir,
+        onProgress,
+      });
+      const rejected = verifications.filter(({ decision }) => decision !== "accepted");
+      return json({ runId: document.runId, files, sections: document.sections, rejected });
+    } finally {
+      db.close();
+    }
+  };
+
+  server.registerTool(
+    "cv_generate",
+    {
+      description: `Generate a CV tailored to a job posting. ${generated}`,
+      inputSchema: z.object(jobInput).refine(oneJob.check, { error: oneJob.error }),
+      annotations: writes,
+    },
+    (input, context) => generate("cv", input, context),
+  );
+
+  server.registerTool(
+    "letter_generate",
+    {
+      description: `Generate a cover letter tailored to a job posting. ${generated}`,
+      inputSchema: z
+        .object({ ...jobInput, tone: z.enum(TONES).optional() })
+        .refine(oneJob.check, { error: oneJob.error }),
+      annotations: writes,
+    },
+    (input, context) => generate("letter", input, context),
   );
 
   server.registerTool(
@@ -154,6 +238,27 @@ export function createServer({ kbDir, dbPath, provider }: ServerConfig): McpServ
   );
 
   return server;
+}
+
+type JobInput = {
+  jobText?: string;
+  jobAnalysisId?: string;
+  language: Lang;
+  market: Document["market"];
+};
+
+/** Generation takes minutes; progress tells the client that the request is still alive. */
+function progressReporter({ mcpReq }: ServerContext): (step: string) => void {
+  const progressToken = mcpReq._meta?.progressToken;
+  let progress = 0;
+  return (message) => {
+    if (progressToken === undefined) return;
+    progress += 1;
+    mcpReq
+      .notify({ method: "notifications/progress", params: { progressToken, progress, message } })
+      // A client that has gone away must not fail the run.
+      .catch(() => undefined);
+  };
 }
 
 /** Read on every call, so that edits to the files show up without a restart. */

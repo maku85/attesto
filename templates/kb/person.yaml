@@ -1,0 +1,16 @@
+# Replace these values with your own. Texts can be a string, written in defaultLanguage, or a map:
+#   headline: { it: ..., en: ..., de: ... }
+id: per-me
+name: Your Name
+defaultLanguage: en
+location: Your town
+contacts:
+  email: you@example.com
+  # phone: "+41 ..."
+  # links: [https://...]
+# nationality: ...
+# workPermit: ...
+# birthDate: 1990-01-31
+languages:
+  - { language: en, level: native }
+workCertificatesAvailable: false
