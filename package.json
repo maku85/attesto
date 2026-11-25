@@ -1,6 +1,6 @@
 {
   "name": "attesto",
-  "version": "0.0.0",
+  "version": "0.9.0",
   "description": "A career knowledge base exposed via MCP, with claim-level provenance. No source, no claim.",
   "license": "MIT",
   "repository": "github:maku85/attesto",

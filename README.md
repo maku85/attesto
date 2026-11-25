@@ -7,6 +7,9 @@ A career knowledge base exposed via MCP, with claim-level provenance. _No source
 attesto keeps a professional history as YAML files and writes CVs and cover letters from it, tailored to a
 job posting, in Italian, English and German, with Swiss conventions.
 
+> **Status: 0.9.** The pipeline is complete, but its error rates are
+> [not measured yet](#evaluation).
+
 ## The problem
 
 Ask an LLM to tailor a CV and it improves the facts as well as the wording. "Contributed to" becomes "led",
