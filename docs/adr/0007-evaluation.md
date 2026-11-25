@@ -26,7 +26,7 @@ verifier drops what it flags. A verifier that rejects everything would also scor
 ## Consequences
 
 - The labels in `basic.yaml` and `hard.yaml` were written together with the judge's prompt, so they flatter
-  it. `blind.yaml` is for claims by someone who has not seen the prompt.
+  it. `blind.yaml` has sentences by another LLM, which was given neither the prompt nor the other sets.
 - One fictional person and 20 invented postings are a small world.
 - Models do not accept a temperature setting, so a new live run gives different numbers.
 - The evaluation checks claims against their sources. It cannot notice a source that states too much. Two

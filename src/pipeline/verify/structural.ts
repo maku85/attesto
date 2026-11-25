@@ -35,7 +35,15 @@ export function inScope(source: Source, slot: string): boolean {
   }
 }
 
+/**
+ * German writes ordinals with a full stop before a capitalized noun: "im 95. Perzentil", "15. März".
+ * Only after an article or before a month, so that "auf 8. Leitete…" still counts as two sentences.
+ */
+const GERMAN_ORDINAL =
+  /(?<=(?<!\p{L})(?:im|am|vom|zum|beim|der|die|das|dem|den|des)\s\d{1,2})\.(?=\s)|(?<=(?<!\d)\d{1,2})\.(?=\s(?:Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)(?!\p{L}))/giu;
+
 function countSentences(text: string, language: Lang): number {
-  const segments = new Intl.Segmenter(language, { granularity: "sentence" }).segment(text.trim());
+  const plain = language === "de" ? text.replace(GERMAN_ORDINAL, "") : text;
+  const segments = new Intl.Segmenter(language, { granularity: "sentence" }).segment(plain.trim());
   return [...segments].filter(({ segment }) => segment.trim() !== "").length;
 }

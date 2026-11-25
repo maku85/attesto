@@ -46,17 +46,19 @@ describe("statistics", () => {
 });
 
 describe("seeded claims", () => {
-  const claims = loadSeeded();
+  const all = loadSeeded();
+  // The sets whose labels and design are ours; "blind" is whatever its authors made it.
+  const claims = all.filter(({ set }) => set !== "blind");
   type Judge = ConstructorParameters<typeof PipelineProvider>[0]["judge"];
   const run = (judge?: Judge, repeat = 1, among = claims) =>
     runSeeded(among, exampleKb(), new PipelineProvider({ draft: [], judge }), "judge", repeat);
 
   it("have unique IDs and cover many kinds of falsehood", () => {
-    expect(new Set(claims.map(({ id }) => id)).size).toBe(claims.length);
+    expect(new Set(all.map(({ id }) => id)).size).toBe(all.length);
     expect(claims.filter(({ supported }) => !supported).length).toBeGreaterThanOrEqual(50);
     expect(claims.filter(({ supported }) => supported).length).toBeGreaterThanOrEqual(25);
     expect(new Set(claims.map(({ kind }) => kind)).size).toBeGreaterThanOrEqual(12);
-    for (const { supported, kind } of claims) expect(kind === "true").toBe(supported);
+    for (const { supported, kind } of all) expect(kind === "true").toBe(supported);
   });
 
   it("are caught by code where code is meant to catch them, and otherwise reach the judge", async () => {
@@ -65,6 +67,16 @@ describe("seeded claims", () => {
       const reached = attempts[0]?.entailment !== null;
       expect({ id: claim.id, reached }).toEqual({ id: claim.id, reached: claim.set !== "code" });
     }
+  });
+
+  it("include sentences by another author, most of which reach the judge", async () => {
+    const blind = all.filter(({ set }) => set === "blind");
+    const results = await run(undefined, 1, blind);
+    const reached = results.filter(({ attempts }) => attempts[0]?.entailment !== null);
+    expect(blind).toHaveLength(29);
+    expect(reached.length).toBeGreaterThanOrEqual(28);
+    // A true sentence that code stops is a defect of the code.
+    expect(results.filter((r) => r.claim.supported && !reached.includes(r))).toEqual([]);
   });
 
   it("show an uncritical judge as missing every false claim that code does not catch", async () => {

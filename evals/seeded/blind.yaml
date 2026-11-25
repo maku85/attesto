@@ -1,9 +1,205 @@
-# Claims written by a person who has not looked at the prompt of the judge. Half true, half false.
-# Write about the person in examples/kb. Sources are the entries the claim would cite.
-#
-# - id: blind-1
-#   kind: "true"          # or a word for what is wrong, such as role, scope, effect, time
-#   language: it          # it, en or de
-#   supported: true
-#   sources: [ach-lagonube-mentoring]
-#   text: One sentence.
+# Sentences and labels by another LLM, which was not given the prompt of the judge or the other sets.
+# Before any judge saw them, the labels of blind-13 and blind-29 were changed to false and blind-20 was
+# removed as ambiguous: proposed by the AI assistant this project was built with, decided by the author.
+- id: blind-1
+  kind: "true"
+  language: it
+  supported: true
+  sources: [exp-lagonube-2022, ach-lagonube-deploy-time]
+  text: "Nel ruolo presso LagoNube SA ha dimezzato abbondantemente il tempo mediano di deployment, intervenendo direttamente sulle pipeline di integrazione e rilascio continuo."
+
+- id: blind-2
+  kind: "attribution"
+  language: en
+  supported: false
+  sources: [exp-pagofacile-2019, ach-pagofacile-throughput]
+  text: "At PagoFacile AG, I led the team responsible for redesigning the Kafka payment pipeline, increasing its throughput from 400 to 2500 events per second."
+
+- id: blind-3
+  kind: "true"
+  language: de
+  supported: true
+  sources: [ach-lagonube-k8s-migration]
+  text: "Bei der Migration zur Kubernetes-Plattform wurden 32 Dienste gemeinsam mit zwei Kollegen von virtuellen Maschinen übertragen."
+
+- id: blind-4
+  kind: "unit"
+  language: it
+  supported: false
+  sources: [ach-pagofacile-throughput]
+  text: "Presso PagoFacile AG ha incrementato la capacità della pipeline di pagamento da 400 a 2500 eventi al minuto grazie alla riprogettazione basata su Kafka."
+
+- id: blind-5
+  kind: "true"
+  language: en
+  supported: true
+  sources: [ach-pagofacile-reconciliation]
+  text: "The daily reconciliation process he implemented eliminated the equivalent of six hours of manual work every week."
+
+- id: blind-6
+  kind: "status"
+  language: de
+  supported: false
+  sources: [cert-k8s-admin-2023]
+  text: "Seine Kubernetes-Administrator-Zertifizierung des Example Cloud Institute ist weiterhin gültig und bestätigt seine aktuelle Qualifikation."
+
+- id: blind-7
+  kind: "true"
+  language: it
+  supported: true
+  sources: [ach-lagonube-cloud-cost]
+  text: "Ha contribuito alla riduzione del 27% della spesa mensile per il cloud attraverso una migliore dimensionamento dei pool di nodi."
+
+- id: blind-8
+  kind: "recency"
+  language: en
+  supported: false
+  sources: [skl-java, skl-typescript, skl-nodejs]
+  text: "Java remains one of his actively used programming languages, alongside TypeScript and Node.js."
+
+- id: blind-9
+  kind: "true"
+  language: de
+  supported: true
+  sources: [skl-grafana, drv-skl-grafana]
+  text: "Seine Erfahrung mit Grafana umfasst vier Jahre, wobei er die Technologie auf einem Arbeitsniveau beherrscht."
+
+- id: blind-10
+  kind: "attribution"
+  language: it
+  supported: false
+  sources: [ach-lagonube-alerting, exp-pagofacile-2019]
+  text: "La riduzione degli alert mensili da 120 a 35 è stata ottenuta introducendo obiettivi di livello di servizio nel ruolo di Backend Engineer presso PagoFacile AG."
+
+- id: blind-11
+  kind: "true"
+  language: en
+  supported: true
+  sources: [edu-politecnico-2014]
+  text: "I hold a Bachelor's degree in computer engineering from the Politecnico di Esempio, where I studied in Milan between 2011 and 2014."
+
+- id: blind-12
+  kind: "true"
+  language: de
+  supported: true
+  sources: [ach-cantiere-offline, ach-cantiere-ci]
+  text: "Bei Cantiere Digitale Sagl entwickelte er den Offline-Modus einer Baustellenberichtsanwendung, die von 14 Unternehmen genutzt wurde, und richtete dort die erste automatisierte Build- und Testpipeline ein."
+
+- id: blind-13
+  kind: "detail"
+  language: it
+  supported: false
+  sources: [ach-lagonube-mentoring]
+  text: "Nel ruolo di Senior Platform Engineer ha seguito individualmente tre ingegneri junior attraverso attività strutturate di mentoring."
+
+- id: blind-14
+  kind: "ownership"
+  language: en
+  supported: false
+  sources: [prj-kubeledger, ach-kubeledger-mcp]
+  text: "The kubeledger project was originally designed and published by me, and I subsequently added its MCP server to support assistant-based cost reporting."
+
+- id: blind-15
+  kind: "level"
+  language: de
+  supported: false
+  sources: [skl-postgresql, drv-skl-postgresql]
+  text: "Seine PostgreSQL-Kenntnisse werden als Expertenniveau eingestuft, und er verfügt über elf Jahre Berufserfahrung mit dieser Datenbanktechnologie."
+
+- id: blind-16
+  kind: "employer"
+  language: it
+  supported: false
+  sources: [ach-cantiere-ci, exp-lagonube-2022]
+  text: "Ha realizzato la prima pipeline automatizzata di build e test durante la sua esperienza come Full-stack Developer presso LagoNube SA."
+
+- id: blind-17
+  kind: "true"
+  language: en
+  supported: true
+  sources: [drv-skl-nodejs, skl-nodejs]
+  text: "My professional experience with Node.js spans nine years, and the technology remains part of my current skill set."
+
+- id: blind-18
+  kind: "level"
+  language: de
+  supported: false
+  sources: [drv-skl-kafka, skl-kafka]
+  text: "Seine Kafka-Erfahrung beträgt zwei Jahre, und seine Kenntnisse in dieser Technologie werden auf fortgeschrittenem Niveau bewertet."
+
+- id: blind-19
+  kind: "true"
+  language: it
+  supported: true
+  sources: [ach-lagonube-docs-assistant, skl-llm]
+  text: "Ha collaborato allo sviluppo di un assistente interno per la documentazione aziendale basato su generazione aumentata dal recupero delle informazioni, utilizzando competenze di integrazione di modelli linguistici."
+
+- id: blind-21
+  kind: "true"
+  language: de
+  supported: true
+  sources: [exp-lagonube-2022]
+  text: "Seit seinem Eintritt bei LagoNube SA arbeitet er in Lugano als Senior Platform Engineer an einer internen Kubernetes-Plattform für Produktentwicklungsteams."
+
+- id: blind-22
+  kind: "precision"
+  language: it
+  supported: false
+  sources: [drv-exp-lagonube-2022]
+  text: "La sua esperienza presso LagoNube SA ammonta a quattro anni esatti, senza superare tale durata."
+
+- id: blind-23
+  kind: "true"
+  language: en
+  supported: true
+  sources: [drv-skl-aws, skl-aws]
+  text: "My AWS experience amounts to seven years, and I have continued using the technology since first adopting it in 2019."
+
+- id: blind-24
+  kind: "unit"
+  language: de
+  supported: false
+  sources: [ach-pagofacile-query-latency]
+  text: "Bei PagoFacile AG reduzierte er die Latenz der Transaktionssuche im 95. Perzentil von 1,8 Sekunden auf 250 Sekunden."
+
+- id: blind-25
+  kind: "true"
+  language: it
+  supported: true
+  sources: [ach-tecnobanca-batch, exp-tecnobanca-2014]
+  text: "Durante la sua esperienza presso TecnoBanca SpA ha ridotto la durata del processo notturno di regolamento da cinque ore a un'ora e mezza."
+
+- id: blind-26
+  kind: "scope"
+  language: en
+  supported: false
+  sources: [drv-skl-ci-cd, exp-lagonube-2022]
+  text: "I have nine years of CI/CD experience, all of which were acquired while working at LagoNube SA."
+
+- id: blind-27
+  kind: "true"
+  language: de
+  supported: true
+  sources: [drv-skl-kubernetes, skl-kubernetes]
+  text: "Seine Erfahrung mit Kubernetes umfasst sechs Jahre, und die Plattformtechnologie wird weiterhin aktiv eingesetzt."
+
+- id: blind-28
+  kind: "availability"
+  language: it
+  supported: false
+  sources: [stm-availability]
+  text: "È disponibile per iniziare immediatamente un nuovo incarico, senza dover rispettare alcun periodo di preavviso."
+
+- id: blind-29
+  kind: "detail"
+  language: en
+  supported: false
+  sources: [ach-pagofacile-iac, exp-pagofacile-2019]
+  text: "At PagoFacile AG, I migrated the payments team's AWS infrastructure to Terraform, applying infrastructure-as-code practices in a production environment."
+
+- id: blind-30
+  kind: "scope"
+  language: de
+  supported: false
+  sources: [drv-total-experience, exp-lagonube-2022]
+  text: "Seine gesamte elfjährige Berufserfahrung sammelte er bei LagoNube SA, wo er durchgehend als Senior Platform Engineer tätig war."

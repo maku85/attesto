@@ -1,6 +1,6 @@
 # Claims that pass the structure and number checks, so that only the judge can tell them apart.
 # The labels here and in hard.yaml were written together with the prompt of the judge, by the AI
-# assistant this project was built with. blind.yaml is for labels that are independent of it.
+# assistant this project was built with. blind.yaml is independent of it.
 - {
     id: true-paraphrase,
     kind: "true",

@@ -95,6 +95,17 @@ describe("structure", () => {
     expect(await check("Rewrote pipelines.", cited, { slot })).toMatchObject({ passed: true });
   });
 
+  it.each([
+    ["Latenz im 95. Perzentil gesenkt.", true],
+    ["Am 15. März 2021 begonnen.", true],
+    ["Auf 8. Leitete das Team.", false],
+    ["Bis 2021. Leitete das Team.", false],
+    ["Im 95. Perzentil gesenkt. Leitete das Team.", false],
+  ])("reads German ordinals: %j is one sentence: %s", async (text, one) => {
+    const { structural } = await setUp().check(text, [ach], { language: "de" });
+    expect(structural.includes("multiple-sentences")).toBe(!one);
+  });
+
   it("never asked the judge about a rejected claim", () => {
     expect(provider.count("judge")).toBe(4);
   });
