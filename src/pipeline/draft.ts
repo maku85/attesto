@@ -54,7 +54,8 @@ After naming an employer once, leave out its legal form: "Example", not "Example
 const SLOT_RULES: Record<Document["type"], string> = {
   cv: `Write the text of a CV.
 - "summary": two or three sentences that connect the candidate to the posting. A result belongs either
-  here or in a bullet, never in both.
+  here or in a bullet, never in both. It mentions no skill of level "basic", even if the posting asks
+  for it: the skills are listed elsewhere with their levels.
 - Every other slot is an experience or project: one to five bullet sentences, and up to eight for a
   current role, the most relevant
   first. Leave out a slot that has nothing relevant. Role, employer, location and period
