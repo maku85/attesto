@@ -1,0 +1,141 @@
+- id: exp-lagonube-2022
+  company: LagoNube SA
+  role:
+    it: Ingegnera di piattaforma senior
+    en: Senior Platform Engineer
+    de: Senior Platform Engineer
+  start: 2022-01
+  end: null
+  location: Lugano
+  description:
+    it: Piattaforma interna su Kubernetes usata dai team di sviluppo prodotto.
+    en: Internal Kubernetes platform used by the product development teams.
+    de: Interne Kubernetes-Plattform für die Produktentwicklungsteams.
+  achievements:
+    - id: ach-lagonube-deploy-time
+      statement:
+        it: Ho ridotto il tempo mediano di deploy da 45 a 8 minuti riscrivendo le pipeline CI/CD.
+        en: Reduced the median deployment time from 45 to 8 minutes by rewriting the CI/CD pipelines.
+        de: Mediane Deployment-Zeit durch neu geschriebene CI/CD-Pipelines von 45 auf 8 Minuten gesenkt.
+      metrics:
+        - { value: 45, unit: minutes, context: median deployment time before }
+        - { value: 8, unit: minutes, context: median deployment time after }
+      skills: [skl-ci-cd, skl-kubernetes]
+      date: 2022-11
+    - id: ach-lagonube-k8s-migration
+      statement: Migrated 32 services from virtual machines to Kubernetes together with two colleagues.
+      metrics:
+        - { value: 32, unit: services, context: services migrated }
+      skills: [skl-kubernetes, skl-docker, skl-terraform]
+      date: 2023-06
+    - id: ach-lagonube-cloud-cost
+      statement:
+        it: Ho ridotto la spesa cloud mensile del 27% dimensionando correttamente i node pool.
+        en: Cut monthly cloud spending by 27% by right-sizing the node pools.
+        de: Monatliche Cloud-Kosten durch passend dimensionierte Node-Pools um 27% gesenkt.
+      metrics:
+        - { value: 27, unit: "%", context: reduction of monthly cloud spending }
+      skills: [skl-kubernetes, skl-aws]
+      date: 2024-03
+    - id: ach-lagonube-alerting
+      statement: Introduced service-level objectives and reduced pager alerts from 120 to 35 per month.
+      metrics:
+        - { value: 120, unit: alerts per month, context: before }
+        - { value: 35, unit: alerts per month, context: after }
+      skills: [skl-observability]
+      date: 2024-09
+    - id: ach-lagonube-mentoring
+      statement: Mentored 3 junior engineers.
+      metrics:
+        - { value: 3, unit: people, context: junior engineers mentored }
+      skills: [skl-mentoring]
+    - id: ach-lagonube-docs-assistant
+      statement: Contributed to an internal documentation assistant based on retrieval-augmented generation.
+      skills: [skl-llm, skl-python]
+      date: 2025-02
+
+- id: exp-pagofacile-2019
+  company: PagoFacile AG
+  role:
+    it: Sviluppatrice backend
+    en: Backend Engineer
+    de: Backend-Entwicklerin
+  start: 2019-01
+  end: 2021-12
+  location:
+    it: Zurigo
+    en: Zurich
+    de: Zürich
+  description:
+    it: Servizi di pagamento per commercianti online.
+    en: Payment services for online merchants.
+    de: Zahlungsdienste für Online-Händler.
+  achievements:
+    - id: ach-pagofacile-throughput
+      statement: Redesigned the payment event pipeline on Kafka, raising throughput from 400 to 2500 events per second.
+      metrics:
+        - { value: 400, unit: events per second, context: before }
+        - { value: 2500, unit: events per second, context: after }
+      skills: [skl-kafka, skl-nodejs, skl-typescript]
+      date: 2020-10
+    - id: ach-pagofacile-reconciliation
+      statement: Built the daily reconciliation service, replacing 6 hours of manual work per week.
+      metrics:
+        - { value: 6, unit: hours per week, context: manual work replaced }
+      skills: [skl-typescript, skl-postgresql]
+      date: 2019-11
+    - id: ach-pagofacile-query-latency
+      statement: Lowered the 95th percentile latency of the transaction search from 1.8 seconds to 250 milliseconds.
+      metrics:
+        - { value: 1.8, unit: seconds, context: 95th percentile latency before }
+        - { value: 250, unit: milliseconds, context: 95th percentile latency after }
+      skills: [skl-postgresql]
+      date: 2021-04
+    - id: ach-pagofacile-iac
+      statement: Moved the AWS infrastructure of the payments team to Terraform.
+      skills: [skl-terraform, skl-aws]
+      date: 2021-09
+
+- id: exp-cantiere-2017
+  company: Cantiere Digitale Sagl
+  role:
+    it: Sviluppatrice full stack
+    en: Full-stack Developer
+    de: Full-Stack-Entwicklerin
+  start: 2017-02
+  end: 2018-12
+  location: Bellinzona
+  description: Web applications for small and medium-sized construction companies.
+  achievements:
+    - id: ach-cantiere-offline
+      statement: Developed the offline mode of the site-report application used by 14 companies.
+      metrics:
+        - { value: 14, unit: companies, context: companies using the application }
+      skills: [skl-nodejs, skl-typescript]
+      date: 2018-06
+    - id: ach-cantiere-ci
+      statement: Set up the first automated build and test pipeline of the company.
+      skills: [skl-ci-cd, skl-docker]
+      date: 2017-09
+
+- id: exp-tecnobanca-2014
+  company: TecnoBanca SpA
+  role:
+    it: Sviluppatrice Java junior
+    en: Junior Java Developer
+    de: Junior-Java-Entwicklerin
+  start: 2014-09
+  end: 2017-01
+  location:
+    it: Milano
+    en: Milan
+    de: Mailand
+  description: Maintenance and development of back-office banking applications.
+  achievements:
+    - id: ach-tecnobanca-batch
+      statement: Shortened the nightly settlement batch from 5 hours to 90 minutes.
+      metrics:
+        - { value: 5, unit: hours, context: duration of the batch before }
+        - { value: 90, unit: minutes, context: duration of the batch after }
+      skills: [skl-java, skl-postgresql]
+      date: 2016-05

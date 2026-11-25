@@ -1,0 +1,89 @@
+- id: skl-typescript
+  name: TypeScript
+  aliases: [TS]
+  category: Programming languages
+  level: expert
+  since: 2018-03
+- id: skl-nodejs
+  name: Node.js
+  aliases: [Node, NodeJS]
+  category: Programming languages
+  level: expert
+  since: 2017-02
+- id: skl-java
+  name: Java
+  category: Programming languages
+  level: advanced
+  since: 2014-09
+- id: skl-python
+  name: Python
+  category: Programming languages
+  level: working
+  since: 2020-01
+- id: skl-postgresql
+  name: PostgreSQL
+  aliases: [Postgres]
+  category: Databases
+  level: advanced
+  since: 2015-06
+- id: skl-kafka
+  name: Apache Kafka
+  aliases: [Kafka]
+  category: Messaging
+  level: working
+  since: 2019-09
+- id: skl-docker
+  name: Docker
+  category: Platform
+  level: advanced
+  since: 2017-02
+- id: skl-kubernetes
+  name: Kubernetes
+  aliases: [K8s]
+  category: Platform
+  level: advanced
+  since: 2020-05
+- id: skl-terraform
+  name: Terraform
+  aliases: [IaC]
+  category: Platform
+  level: advanced
+  since: 2021-03
+- id: skl-ci-cd
+  name: CI/CD
+  aliases: [GitHub Actions, GitLab CI]
+  category: Platform
+  level: advanced
+  since: 2017-02
+- id: skl-observability
+  name:
+    it: Osservabilità
+    en: Observability
+    de: Observability
+  aliases: [Prometheus, Grafana, OpenTelemetry]
+  category: Platform
+  level: advanced
+  since: 2020-05
+- id: skl-aws
+  name: AWS
+  aliases: [Amazon Web Services]
+  category: Cloud
+  level: working
+  since: 2019-01
+- id: skl-llm
+  name:
+    it: Integrazione di LLM
+    en: LLM integration
+    de: LLM-Integration
+  aliases: [RAG, AI engineering, MCP]
+  category: AI
+  level: working
+  since: 2023-09
+- id: skl-mentoring
+  name:
+    it: Mentoring
+    en: Mentoring
+    de: Mentoring
+  category: Leadership
+  level: working
+  since: 2022-01

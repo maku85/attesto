@@ -1,0 +1,11 @@
+node_modules/
+dist/
+out/
+
+# Personal data must never be committed.
+data/private/
+.attesto/
+*.db
+*.db-*
+.env
+.env.*

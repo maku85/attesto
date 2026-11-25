@@ -1,0 +1,12 @@
+- id: edu-politecnico-2014
+  institution: Politecnico di Esempio
+  title:
+    it: Laurea triennale in ingegneria informatica
+    en: Bachelor's degree in computer engineering
+    de: Bachelor in Informatikingenieurwesen
+  start: 2011
+  end: 2014
+  location:
+    it: Milano
+    en: Milan
+    de: Mailand

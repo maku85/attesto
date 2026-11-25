@@ -1,0 +1,23 @@
+- id: prj-quietqueue
+  name: quietqueue
+  url: https://example.org/quietqueue
+  description:
+    it: Coda di lavori open source per Node.js basata su PostgreSQL.
+    en: Open-source job queue for Node.js backed by PostgreSQL.
+    de: Open-Source-Job-Queue für Node.js auf Basis von PostgreSQL.
+  tech: [skl-typescript, skl-nodejs, skl-postgresql]
+  achievements:
+    - id: ach-quietqueue-release
+      statement: Designed and published quietqueue, and have maintained it since 2021.
+      skills: [skl-typescript, skl-postgresql]
+      date: 2021-05
+- id: prj-kubeledger
+  name: kubeledger
+  url: https://example.org/kubeledger
+  description: Open-source command-line tool that reports Kubernetes cost per namespace.
+  tech: [skl-typescript, skl-kubernetes]
+  achievements:
+    - id: ach-kubeledger-mcp
+      statement: Added an MCP server to kubeledger so that assistants can query cost reports.
+      skills: [skl-llm, skl-kubernetes]
+      date: 2025-06

@@ -1,0 +1,12 @@
+- id: stm-platform-motivation
+  kind: motivation
+  text:
+    it: Mi interessa costruire piattaforme che permettano ad altri team di rilasciare in autonomia.
+    en: I am interested in building platforms that let other teams release on their own.
+    de: Mich interessiert der Aufbau von Plattformen, mit denen andere Teams selbstständig releasen können.
+- id: stm-availability
+  kind: availability
+  text:
+    it: Il mio preavviso è di tre mesi.
+    en: My notice period is three months.
+    de: Meine Kündigungsfrist beträgt drei Monate.

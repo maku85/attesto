@@ -1,0 +1,5 @@
+- id: cert-k8s-admin-2023
+  name: Kubernetes Administrator
+  issuer: Example Cloud Institute
+  date: 2023-02
+  expires: 2026-02

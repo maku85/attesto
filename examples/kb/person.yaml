@@ -1,0 +1,31 @@
+# Entirely fictional. Plain strings in this knowledge base are English (defaultLanguage).
+id: per-giulia-esempio
+name: Giulia Esempio
+defaultLanguage: en
+headline:
+  it: Ingegnera backend e di piattaforma
+  en: Backend and platform engineer
+  de: Backend- und Plattformingenieurin
+location:
+  it: Lugano, Svizzera
+  en: Lugano, Switzerland
+  de: Lugano, Schweiz
+contacts:
+  email: giulia@example.com
+  phone: "+41 00 000 00 00"
+  links:
+    - https://example.com/giulia
+nationality:
+  it: Italiana
+  en: Italian
+  de: Italienisch
+workPermit:
+  it: Permesso C
+  en: Swiss C permit
+  de: Niederlassungsbewilligung C
+birthDate: 1990-04-12
+languages:
+  - { language: it, level: native }
+  - { language: en, level: C1 }
+  - { language: de, level: B1 }
+workCertificatesAvailable: true
