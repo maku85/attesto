@@ -126,11 +126,19 @@ describe("CV", () => {
     expect(output.indexOf("Cut it to 8 minutes.")).toBeGreaterThan(output.indexOf("LagoNube SA"));
   });
 
-  it("lists only selected skills", () => {
-    expect(markdown()).toContain(
-      "- Platform: Kubernetes (advanced), Terraform (advanced)\n- AI: LLM integration (working knowledge)",
-    );
-    expect(markdown()).not.toContain("Apache Kafka");
+  it("lists selected skills, and the advanced ones still in use", () => {
+    const skills = /## Skills\n\n([^#]*)/.exec(markdown())?.[1] ?? "";
+    // Selected, and below advanced.
+    expect(skills).toContain("LLM integration (working knowledge)");
+    // Not selected, but advanced or expert.
+    expect(skills).toContain("TypeScript (expert)");
+    expect(skills).toContain("Docker (advanced)");
+    // Neither, or no longer in use.
+    expect(skills).not.toMatch(/Kafka|Python|Grafana|Java \(/);
+  });
+
+  it("lists a selected skill no longer in use", () => {
+    expect(markdown({ sources: [{ id: "skl-java", sha256: "x" }] })).toContain("Java (advanced)");
   });
 
   it.each([
@@ -175,7 +183,9 @@ describe("CV", () => {
   });
 
   it("leaves out empty sections", () => {
-    const output = markdown({ sections: [], sources: [] });
+    const kb = exampleKb();
+    for (const skill of kb.skills) skill.level = "basic";
+    const output = markdown({ sections: [], sources: [] }, { kb });
     expect(output).not.toMatch(/## (Profile|Projects|Skills)/);
     expect(output).toContain("## Professional experience");
   });

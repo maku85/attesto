@@ -17,6 +17,8 @@ errors, and would send personal data to it.
 - Language decides wording, spelling and date format. The market decides which personal details are
   customary. Swiss German uses "ss" and no comma after salutation and closing.
 - Expired certifications are shown as expired.
+- The skills section lists what the posting asks for and every advanced or expert skill still in use, each
+  with its level. A list of matches alone showed a basic skill and hid the strongest one.
 - All text is escaped, because postings and claims are not trusted. Only http and https addresses become
   links.
 - File names contain the run ID and files are never overwritten, since a document may have been edited.

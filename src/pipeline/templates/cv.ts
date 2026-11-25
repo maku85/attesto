@@ -68,7 +68,11 @@ export function cvTemplate(input: TemplateInput): Block[] {
       ];
     }),
   );
-  const skills = kb.skills.filter(({ id }) => selected.has(id));
+  // What the posting asks for, and what the person is best at even if it does not ask.
+  const skills = kb.skills.filter(
+    ({ id, level, until }) =>
+      selected.has(id) || ((level === "advanced" || level === "expert") && !until),
+  );
   const categories = [...new Set(skills.map(({ category }) => text(category)))];
   section(
     label.skills,
