@@ -79,6 +79,8 @@ it.each([
   [["get", "a", "b"]],
   [["analyze"]],
   [["verify"]],
+  [["render"]],
+  [["render", "x", "--template", "fancy"]],
   [["runs"]],
   [["eval", "--only", "nothing"]],
   [["eval", "--repeat", "0"]],
@@ -137,6 +139,26 @@ it("creates a knowledge base that is valid, and never touches an existing one", 
   expect(again).toMatchObject({ status: 1, stderr: `${kb} is not empty\n` });
   expect(readFileSync(join(kb, "skills.yaml"), "utf8")).toBe("# mine\n");
   rmSync(dir, { recursive: true });
+});
+
+it("asks for a browser before reading the posting or calling the LLM", () => {
+  const { status, stderr } = attesto(
+    [
+      "generate",
+      "--job",
+      "missing.txt",
+      "--type",
+      "cv",
+      "--lang",
+      "it",
+      "--market",
+      "ch-it",
+      "--pdf",
+    ],
+    { ATTESTO_BROWSER: join(ROOT, "missing") },
+  );
+  expect(stderr).toContain("A PDF needs Chrome, Chromium or Edge");
+  expect(status).toBe(1);
 });
 
 it("prints help", () => {

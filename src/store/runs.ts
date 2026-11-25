@@ -83,12 +83,25 @@ export function failRun(db: DatabaseSync, id: string, error: string): void {
   db.prepare("UPDATE runs SET status = 'failed', error = ? WHERE id = ?").run(error, id);
 }
 
-export function storeOutputHashes(
+export function storeOutputHash(
   db: DatabaseSync,
   id: string,
-  hashes: Record<string, string>,
+  extension: string,
+  hash: string,
 ): void {
-  db.prepare("UPDATE runs SET output_hashes = ? WHERE id = ?").run(JSON.stringify(hashes), id);
+  db.prepare(
+    `UPDATE runs SET output_hashes =
+       json_patch(coalesce(output_hashes, '{}'), json_object(?, ?)) WHERE id = ?`,
+  ).run(extension, hash, id);
+}
+
+/** The run whose ID starts with `prefix`; file names carry the first eight characters. */
+export function findRunId(db: DatabaseSync, prefix: string): string {
+  const matches = listRuns(db).filter(({ id }) => id.startsWith(prefix));
+  const [match] = matches;
+  if (!match) throw new Error(`No run has the ID ${prefix}`);
+  if (matches.length > 1) throw new Error(`More than one run starts with ${prefix}`);
+  return match.id;
 }
 
 const SUMMARY = "id, created_at AS createdAt, status, type, language, market";

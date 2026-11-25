@@ -1,5 +1,7 @@
 import type { Lang } from "../kb/schema.ts";
+import type { Document } from "./document.ts";
 import type { Block, Line } from "./templates/layout.ts";
+import { STYLE, type Template } from "./templates/styles.ts";
 
 export function toMarkdown(blocks: Block[]): string {
   return blocks.map(markdownBlock).join("\n\n") + "\n";
@@ -41,23 +43,55 @@ export function escapeMarkdown(text: string): string {
     .replace(/^(?:[-+=]|\d+[.)])(?=\s|$)/, (marker) => `${marker.slice(0, -1)}\\${marker.at(-1)}`);
 }
 
-export function toHtml(blocks: Block[], lang: Lang): string {
+export type HtmlOptions = { lang: Lang; type: Document["type"]; template?: Template };
+
+export function toHtml(blocks: Block[], { lang, type, template = "classic" }: HtmlOptions): string {
   const title = blocks.find((block) => block.kind === "title" || block.kind === "heading");
+  // No scripts, images or requests, whatever the text contains.
+  const policy = "default-src 'none'; style-src 'unsafe-inline'";
   return `<!doctype html>
 <html lang="${lang}">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="${policy}">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title && "line" in title ? html(title.line) : ""}</title>
-<style>${STYLE}</style>
+<style>${STYLE[template]}</style>
 </head>
-<body>
+<body class="${type}">
 <main>
-${blocks.map(htmlBlock).join("\n")}
+${htmlSections(blocks)}
 </main>
 </body>
 </html>
 `;
+}
+
+/** Everything before the first heading is the header; every heading starts a section. */
+function htmlSections(blocks: Block[]): string {
+  const starts = blocks.flatMap(({ kind }, i) => (kind === "heading" ? [i] : []));
+  const header = blocks.slice(0, starts[0] ?? blocks.length);
+  const sections = starts.map((start, i) => {
+    const [heading, ...content] = blocks.slice(start, starts[i + 1] ?? blocks.length);
+    return `<section>\n${heading ? htmlBlock(heading) : ""}\n<div>\n${htmlContent(content)}\n</div>\n</section>`;
+  });
+  return [`<header>\n${htmlContent(header)}\n</header>`, ...sections].join("\n");
+}
+
+/** Keeps an entry together with the bullets that follow it. */
+function htmlContent(blocks: Block[]): string {
+  return blocks
+    .map((block, i) => {
+      if (block.kind === "entry") {
+        const next = blocks[i + 1];
+        const bullets = next?.kind === "bullets" ? `\n${htmlBlock(next)}` : "";
+        return `<div class="entry">${htmlBlock(block)}${bullets}</div>`;
+      }
+      const inEntry = block.kind === "bullets" && blocks[i - 1]?.kind === "entry";
+      return inEntry ? "" : htmlBlock(block);
+    })
+    .filter((part) => part !== "")
+    .join("\n");
 }
 
 function htmlBlock(block: Block): string {
@@ -100,26 +134,3 @@ function escapeHtml(text: string): string {
   };
   return text.replace(/[&<>"']/g, (character) => entities[character] ?? character);
 }
-
-const STYLE = `
-:root { color-scheme: light; }
-body { margin: 0; background: #fff; color: #1a1a1a; font: 11pt/1.5 system-ui, sans-serif; }
-main { max-width: 48rem; margin: 0 auto; padding: 2rem 1rem; }
-h1 { margin: 0; font-size: 1.8em; }
-h2 { margin: 1.5em 0 .4em; border-bottom: 1px solid #bbb; font-size: 1.15em; }
-h3 { margin: 1em 0 0; font-size: 1em; }
-p { margin: .5em 0; }
-ul { margin: .3em 0; padding-left: 1.2em; }
-dl { display: grid; grid-template-columns: max-content 1fr; gap: .1em 1em; margin: 1em 0; }
-dt { color: #555; }
-dd { margin: 0; overflow-wrap: anywhere; }
-a { color: inherit; }
-.lines { margin: 0 0 1.5em; }
-.subtitle, .meta { margin: 0; color: #555; }
-.photo { float: right; width: 3.5cm; height: 4.5cm; border: 1px dashed #888; color: #555;
-  display: grid; place-items: center; }
-h2, h3 { break-after: avoid; }
-li { break-inside: avoid; }
-@page { size: A4; margin: 1.8cm; }
-@media print { main { max-width: none; padding: 0; } }
-`;

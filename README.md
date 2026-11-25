@@ -72,7 +72,8 @@ Design decisions are recorded in [docs/adr](docs/adr):
 [claim-level provenance](docs/adr/0004-claim-level-provenance.md),
 [verifier strategy](docs/adr/0005-verifier-strategy.md),
 [rendering](docs/adr/0006-rendering.md),
-[evaluation](docs/adr/0007-evaluation.md).
+[evaluation](docs/adr/0007-evaluation.md),
+[PDF](docs/adr/0008-pdf.md).
 
 ## Quickstart
 
@@ -96,7 +97,14 @@ pnpm attesto generate --job evals/postings/en-platform-01.txt \
 ```
 
 This writes five files to `out/`: the CV as Markdown and HTML, the provenance report as Markdown and JSON,
-and a copy of the claims. To check claims you edited in that copy:
+and a copy of the claims. Add `--pdf` for a PDF, printed by an installed Chrome, Chromium or Edge, and `--template modern` for another
+style. A past run can be restyled without calling an LLM:
+
+```sh
+pnpm attesto render <run-id> --template modern --pdf --kb examples/kb
+```
+
+To check claims you edited in the copy:
 
 ```sh
 pnpm attesto verify out/cv-en-<run>.document.json --kb examples/kb
@@ -113,6 +121,7 @@ Start your own knowledge base in `~/.attesto/kb`, outside any repository, with `
 | `ATTESTO_OUT`         | Where the MCP server writes documents    | `~/.attesto/out`        |
 | `ATTESTO_MODEL`       | Model that analyzes, drafts and rewrites | `claude-opus-5-5`       |
 | `ATTESTO_JUDGE_MODEL` | Model that judges                        | the model above         |
+| `ATTESTO_BROWSER`     | Browser that prints PDFs                 | found by itself         |
 
 ## Using it from an MCP client
 
@@ -154,7 +163,8 @@ Most labels were written together with the judge's prompt and flatter it.
 
 ## Privacy
 
-- No telemetry, and no network access except the Anthropic API.
+- No telemetry, and no network access except the Anthropic API. With `--pdf` a browser is started with a
+  temporary profile and background networking switched off; the page itself cannot make requests.
 - Sent to the API: the posting, the entries that match it with the jobs and projects they belong to,
   achievements of the current role (for CVs),
   durations derived from dates, your statements (for letters), and the claims. Never sent: the fields
@@ -183,7 +193,6 @@ src/evals/     evaluation
 
 ## Roadmap
 
-- PDF output
 - Letters that can refer to the company, with the posting as a source of facts about it
 - More languages and markets
 - Verification of documents that attesto did not write

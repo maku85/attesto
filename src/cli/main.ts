@@ -17,10 +17,18 @@ import { resolveJudgeModel, resolveModel } from "../llm/provider.ts";
 import { ReplayProvider } from "../llm/replay.ts";
 import { createServer } from "../mcp/server.ts";
 import { DOCUMENT_TYPES, MARKETS, TONES, VerifiableDocument } from "../pipeline/document.ts";
-import { analyzeAndStore, produce, today } from "../pipeline/produce.ts";
+import { requireBrowser } from "../pipeline/pdf.ts";
+import {
+  analyzeAndStore,
+  produce,
+  renderRun,
+  today,
+  type Appearance,
+} from "../pipeline/produce.ts";
+import { TEMPLATES } from "../pipeline/templates/styles.ts";
 import { verifyDocument } from "../pipeline/verify/document.ts";
 import { openDb, resolveDbPath } from "../store/db.ts";
-import { getRun, listRuns } from "../store/runs.ts";
+import { findRunId, getRun, listRuns } from "../store/runs.ts";
 import { z } from "zod";
 
 // Resolves to the repository's templates/ from both src/cli and dist/cli.
@@ -34,7 +42,8 @@ const USAGE = `Usage:
   attesto analyze <posting.txt>
   attesto generate --job <posting.txt> --type cv|letter --lang it|en|de
       --market ch-it|ch-en|ch-de [--out <dir>] [--tone formal|warm|direct]
-      [--photo] [--no-regenerate] [--kb <dir>]
+      [--template classic|modern] [--pdf] [--photo] [--no-regenerate] [--kb <dir>]
+  attesto render <run-id> [--template classic|modern] [--pdf] [--photo] [--out <dir>] [--kb <dir>]
   attesto verify <document.json> [--kb <dir>]
   attesto eval [--live] [--only seeded|postings] [--repeat <n>] [--audit]
   attesto runs list
@@ -43,6 +52,8 @@ const USAGE = `Usage:
 
 eval replays recorded answers; with --live it pays for the ones that are missing. --audit draws claims
 for a person to label.
+A PDF needs Chrome, Chromium or Edge; $ATTESTO_BROWSER names one that is not found by itself.
+render writes a past run in another template without calling an LLM. A run ID can be shortened.
 Documents are written to --out, else ./out. The MCP server writes to $ATTESTO_OUT, else
 ~/.attesto/out.
 The knowledge base directory is --kb, else $ATTESTO_KB, else ~/.attesto/kb.
@@ -53,6 +64,20 @@ The model is $ATTESTO_MODEL, else claude-opus-5-5. The judge is $ATTESTO_JUDGE_M
 class UsageError extends Error {}
 
 const kbOption = { kb: { type: "string" } } as const;
+const appearanceOptions = {
+  template: { type: "string", default: "classic" },
+  pdf: { type: "boolean", default: false },
+  photo: { type: "boolean", default: false },
+} as const;
+
+/** Looks for the browser at once, so that a missing one is reported before anything is paid for. */
+function readAppearance(values: { template: string; pdf: boolean; photo: boolean }): Appearance {
+  return {
+    template: oneOf("--template", values.template, TEMPLATES),
+    photo: values.photo,
+    browser: values.pdf ? requireBrowser() : undefined,
+  };
+}
 
 function init(args: string[]): void {
   const { values } = parseArgs({ args, options: kbOption });
@@ -122,7 +147,7 @@ async function generate(args: string[]): Promise<void> {
       market: { type: "string" },
       out: { type: "string", default: "out" },
       tone: { type: "string" },
-      photo: { type: "boolean", default: false },
+      ...appearanceOptions,
       "no-regenerate": { type: "boolean", default: false },
     },
   });
@@ -133,6 +158,7 @@ async function generate(args: string[]): Promise<void> {
   if (!values.job) throw new UsageError("Expected --job");
   if (tone && type === "cv") throw new UsageError("--tone applies to letters");
   if (values.photo && type === "letter") throw new UsageError("--photo applies to CVs");
+  const appearance = readAppearance(values);
   const posting = readFileSync(values.job, "utf8");
   const kb = requireKb(values.kb);
   const provider = new AnthropicProvider();
@@ -156,7 +182,7 @@ async function generate(args: string[]): Promise<void> {
       asOf: today(),
       regenerate: !values["no-regenerate"],
       outDir: values.out,
-      photo: values.photo,
+      ...appearance,
       onProgress,
     });
     const count = (decision: string) =>
@@ -164,6 +190,25 @@ async function generate(args: string[]): Promise<void> {
     console.error(
       `Run ${document.runId}: ${count("accepted")} claims accepted, ${count("dropped")} dropped`,
     );
+    for (const file of files) console.log(file);
+  } finally {
+    db.close();
+  }
+}
+
+async function render(args: string[]): Promise<void> {
+  const { values, positionals } = parseArgs({
+    args,
+    allowPositionals: true,
+    options: { ...kbOption, ...appearanceOptions, out: { type: "string", default: "out" } },
+  });
+  const prefix = onlyArgument(positionals, "a run ID");
+  const appearance = readAppearance(values);
+  const kb = requireKb(values.kb);
+  const db = openDb(resolveDbPath());
+  try {
+    const runId = findRunId(db, prefix);
+    const files = await renderRun({ db, kb, runId, outDir: values.out, ...appearance });
     for (const file of files) console.log(file);
   } finally {
     db.close();
@@ -305,6 +350,7 @@ const COMMANDS: Record<string, (args: string[]) => void | Promise<void>> = {
   get,
   analyze,
   generate,
+  render,
   verify,
   eval: evaluate,
   runs,

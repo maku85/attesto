@@ -18,7 +18,13 @@ it("README names every MCP tool and every environment variable", () => {
   const tools = [...read("src/mcp/server.ts").matchAll(/registerTool\(\s*"([a-z_]+)"/g)];
   expect(tools.length).toBe(8);
   for (const [, name] of tools) expect(readme).toContain(`\`${name}\``);
-  const sources = ["src/cli/main.ts", "src/kb/load.ts", "src/store/db.ts", "src/llm/provider.ts"];
+  const sources = [
+    "src/cli/main.ts",
+    "src/kb/load.ts",
+    "src/store/db.ts",
+    "src/llm/provider.ts",
+    "src/pipeline/pdf.ts",
+  ];
   const variables = sources.flatMap((path) => read(path).match(/ATTESTO_[A-Z_]+/g) ?? []);
   for (const name of variables) expect(readme).toContain(`\`${name}\``);
 });

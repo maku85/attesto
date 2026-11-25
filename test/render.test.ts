@@ -62,7 +62,10 @@ function input(
 const markdown = (...args: Parameters<typeof input>) => toMarkdown(layOut(input(...args)));
 const html = (...args: Parameters<typeof input>) => {
   const given = input(...args);
-  return toHtml(layOut(given), given.document.language);
+  return toHtml(layOut(given), {
+    lang: given.document.language,
+    type: given.document.type,
+  });
 };
 
 describe("every language, market and type", () => {
@@ -227,6 +230,32 @@ describe("letter", () => {
     const output = markdown({ type: "letter", language: "de", market: "ch-de" });
     expect(output).toContain("Sehr geehrte Damen und Herren\n");
     expect(output).toContain("Freundliche Grüsse\n");
+  });
+});
+
+describe("HTML structure", () => {
+  it("is the same in every template, and has a policy that blocks requests", () => {
+    const given = input();
+    const body = (template: "classic" | "modern") =>
+      toHtml(layOut(given), { lang: "en", type: "cv", template }).split("</style>")[1];
+    expect(body("modern")).toBe(body("classic"));
+    expect(html()).toContain("default-src 'none'");
+    expect(html()).not.toMatch(/<script|<img|@import|url\(/);
+  });
+
+  it("groups headings into sections and bullets with their entry", () => {
+    expect(html()).toMatch(
+      /<section>\s*<h2>Professional experience<\/h2>\s*<div>\s*<div class="entry"><h3>[^<]*LagoNube SA<\/h3>.*?<ul>/s,
+    );
+    const output = html();
+    expect(output.match(/<section>/g)?.length).toBe(output.match(/<\/section>/g)?.length);
+    expect(output.match(/<h2>/g)?.length).toBe(output.match(/<section>/g)?.length);
+  });
+
+  it("marks a letter, whose sender comes before the subject", () => {
+    const output = html({ type: "letter" });
+    expect(output).toContain('<body class="letter">');
+    expect(output.indexOf("giulia@example.com")).toBeLessThan(output.indexOf("<h2>"));
   });
 });
 
