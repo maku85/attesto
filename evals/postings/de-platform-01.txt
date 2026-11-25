@@ -1,0 +1,23 @@
+Senior Platform Engineer (80–100 %), Zürich
+
+Die Wolkenwerk Beispiel AG entwickelt Logistiksoftware für über 300 Spediteure in der Schweiz und in
+Süddeutschland. Unser Plattformteam mit sechs Personen sorgt dafür, dass vierzig Entwicklerinnen und
+Entwickler ihre Dienste sicher und selbstständig ausliefern können.
+
+Deine Aufgaben
+- Du baust unsere Kubernetes-Plattform weiter aus und betreibst sie.
+- Du automatisierst die Infrastruktur mit Terraform.
+- Du verbesserst unsere CI/CD-Pipelines und verkürzt die Durchlaufzeiten.
+- Du führst SLOs ein und reduzierst unnötige Alarme.
+
+Dein Profil
+- Mindestens fünf Jahre Erfahrung im Betrieb von Kubernetes in Produktion
+- Sehr gute Kenntnisse in Terraform und AWS
+- Erfahrung mit Prometheus, Grafana oder OpenTelemetry
+- Solide Programmierkenntnisse, idealerweise in Go
+- Deutsch auf Niveau B2, gutes Englisch
+- Von Vorteil: Kubernetes-Zertifizierung, Erfahrung mit Apache Kafka
+- Von Vorteil: Du hast bereits ein Team fachlich geleitet
+
+Wir bieten fünf Wochen Ferien, ein Halbtax-Abo und ein Büro direkt am Bahnhof. Wir freuen uns auf deine
+Bewerbung an jobs@wolkenwerk.example.

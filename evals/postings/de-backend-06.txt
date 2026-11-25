@@ -1,0 +1,15 @@
+Senior Java-Entwickler:in, Luzern
+
+Die Muster Kantonalbank-Informatik modernisiert ihr Kernbankensystem. Im Team Wertschriften ersetzt du
+Batchverarbeitung durch Dienste.
+
+Muss
+- Mindestens acht Jahre Erfahrung mit Java, davon drei mit Spring Boot
+- Erfahrung mit Batchverarbeitung grosser Datenmengen
+- Relationale Datenbanken (Oracle oder PostgreSQL)
+- Deutsch als Muttersprache oder auf Niveau C2
+
+Wunsch
+- Kafka
+- Erfahrung bei einer Bank
+- Führung eines kleinen Entwicklungsteams

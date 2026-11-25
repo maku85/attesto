@@ -1,0 +1,15 @@
+Sviluppatore o sviluppatrice backend, Lugano
+
+Esempio Turismo SA gestisce prenotazioni per oltre duecento strutture ricettive in Ticino.
+
+Mansioni
+- Sviluppo di servizi in TypeScript e Node.js
+- Integrazione con sistemi di pagamento
+- Ottimizzazione delle interrogazioni PostgreSQL
+
+Requisiti
+- Almeno cinque anni di esperienza nello sviluppo backend
+- Ottima conoscenza di Node.js e PostgreSQL
+- Esperienza con applicazioni utilizzabili anche offline
+- Italiano madrelingua, tedesco almeno B1
+- Costituisce titolo preferenziale la conoscenza di Kafka

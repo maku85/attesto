@@ -1,0 +1,330 @@
+# Small exaggerations, and true claims that need a step of reasoning.
+- {
+    id: hard-true-hours,
+    kind: "true",
+    language: en,
+    supported: true,
+    sources: [ach-tecnobanca-batch],
+    text: Cut the nightly settlement batch to an hour and a half.,
+  }
+- {
+    id: hard-true-mentor,
+    kind: "true",
+    language: de,
+    supported: true,
+    sources: [ach-lagonube-mentoring],
+    text: Drei Junior Engineers als Mentor:in begleitet.,
+  }
+- {
+    id: hard-true-role,
+    kind: "true",
+    language: it,
+    supported: true,
+    sources: [exp-pagofacile-2019, drv-exp-pagofacile-2019],
+    text: Per tre anni mi sono occupata di sviluppo backend presso PagoFacile AG a Zurigo.,
+  }
+- {
+    id: hard-true-part,
+    kind: "true",
+    language: en,
+    supported: true,
+    sources: [ach-lagonube-alerting],
+    text: Introduced service-level objectives.,
+  }
+- {
+    id: hard-true-skills,
+    kind: "true",
+    language: en,
+    supported: true,
+    sources: [ach-lagonube-k8s-migration],
+    text: "Together with two colleagues, migrated 32 services to Kubernetes, using Docker and Terraform.",
+  }
+- {
+    id: hard-true-until,
+    kind: "true",
+    language: en,
+    supported: true,
+    sources: [skl-kafka],
+    text: Worked with Apache Kafka until December 2021.,
+  }
+- {
+    id: hard-true-maintainer,
+    kind: "true",
+    language: en,
+    supported: true,
+    sources: [ach-quietqueue-release, prj-quietqueue],
+    text: Has maintained an open-source job queue for Node.js since 2021.,
+  }
+- {
+    id: hard-true-degree,
+    kind: "true",
+    language: de,
+    supported: true,
+    sources: [edu-politecnico-2014],
+    text: Bachelorabschluss in Informatikingenieurwesen am Politecnico di Esempio.,
+  }
+- {
+    id: hard-true-notice,
+    kind: "true",
+    language: it,
+    supported: true,
+    sources: [stm-availability],
+    text: Posso iniziare dopo un preavviso di tre mesi.,
+  }
+- {
+    id: hard-true-quarter,
+    kind: "true",
+    language: en,
+    supported: true,
+    sources: [ach-pagofacile-query-latency],
+    text: Lowered the 95th percentile latency of the transaction search to a quarter of a second.,
+  }
+- {
+    id: hard-true-weekly,
+    kind: "true",
+    language: en,
+    supported: true,
+    sources: [ach-pagofacile-reconciliation],
+    text: Built a reconciliation service that replaced six hours of manual work every week.,
+  }
+- {
+    id: hard-true-coauthor,
+    kind: "true",
+    language: de,
+    supported: true,
+    sources: [ach-lagonube-docs-assistant],
+    text: An einem internen Dokumentationsassistenten mitgearbeitet.,
+  }
+- {
+    id: hard-true-mcp,
+    kind: "true",
+    language: en,
+    supported: true,
+    sources: [ach-kubeledger-mcp, prj-kubeledger],
+    text: "Added an MCP server to kubeledger, an open-source command-line tool.",
+  }
+- {
+    id: hard-true-two-jobs,
+    kind: "true",
+    language: en,
+    supported: true,
+    sources: [ach-cantiere-ci, ach-lagonube-deploy-time],
+    text: Set up the first automated pipeline at Cantiere Digitale Sagl and rewrote the CI/CD pipelines at LagoNube SA.,
+  }
+
+- {
+    id: hard-central,
+    kind: role,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-docs-assistant],
+    text: Played a central part in building an internal documentation assistant.,
+  }
+- {
+    id: hard-co-led,
+    kind: role,
+    language: it,
+    supported: false,
+    sources: [ach-lagonube-k8s-migration],
+    text: Ho co-diretto con due colleghi la migrazione di 32 servizi a Kubernetes.,
+  }
+- {
+    id: hard-managed,
+    kind: role,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-mentoring],
+    text: Managed 3 junior engineers.,
+  }
+- {
+    id: hard-alone,
+    kind: role,
+    language: de,
+    supported: false,
+    sources: [prj-kubeledger, ach-kubeledger-mcp],
+    text: Habe kubeledger allein entwickelt.,
+  }
+- {
+    id: hard-team-lead,
+    kind: role,
+    language: en,
+    supported: false,
+    sources: [exp-pagofacile-2019, drv-exp-pagofacile-2019],
+    text: Spent three years at PagoFacile AG as the lead of its backend engineers.,
+  }
+- {
+    id: hard-all,
+    kind: scope,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-deploy-time],
+    text: Reduced the median deployment time of every service in the company from 45 to 8 minutes.,
+  }
+- {
+    id: hard-total,
+    kind: scope,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-cloud-cost],
+    text: Cut total IT spending by 27%.,
+  }
+- {
+    id: hard-only,
+    kind: scope,
+    language: en,
+    supported: false,
+    sources: [ach-cantiere-ci],
+    text: Built and ran the entire delivery infrastructure of the company.,
+  }
+- {
+    id: hard-popular,
+    kind: effect,
+    language: en,
+    supported: false,
+    sources: [ach-quietqueue-release, prj-quietqueue],
+    text: "Designed and published quietqueue, a popular open-source job queue.",
+  }
+- {
+    id: hard-reliable,
+    kind: effect,
+    language: de,
+    supported: false,
+    sources: [ach-lagonube-alerting],
+    text: Pager-Alarme von 120 auf 35 pro Monat reduziert und damit die Zuverlässigkeit der Plattform erhöht.,
+  }
+- {
+    id: hard-since,
+    kind: time,
+    language: en,
+    supported: false,
+    sources: [skl-kafka],
+    text: Has been using Apache Kafka since 2019.,
+  }
+- {
+    id: hard-currently,
+    kind: time,
+    language: de,
+    supported: false,
+    sources: [exp-pagofacile-2019],
+    text: Entwickelt derzeit Zahlungsdienste für Online-Händler.,
+  }
+- {
+    id: hard-immediately,
+    kind: time,
+    language: en,
+    supported: false,
+    sources: [stm-availability],
+    text: Is available at short notice.,
+  }
+- {
+    id: hard-python,
+    kind: level,
+    language: en,
+    supported: false,
+    sources: [skl-python],
+    text: Has strong Python skills.,
+  }
+- {
+    id: hard-master,
+    kind: level,
+    language: en,
+    supported: false,
+    sources: [edu-politecnico-2014],
+    text: Holds a master's degree in computer engineering.,
+  }
+- {
+    id: hard-teams,
+    kind: object,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-k8s-migration],
+    text: "With two colleagues, moved 32 teams to Kubernetes.",
+  }
+- {
+    id: hard-by,
+    kind: amount,
+    language: en,
+    supported: false,
+    sources: [ach-pagofacile-throughput],
+    text: Raised the throughput of the payment event pipeline by 2500 events per second.,
+  }
+- {
+    id: hard-per-day,
+    kind: amount,
+    language: it,
+    supported: false,
+    sources: [ach-pagofacile-reconciliation],
+    text: Ho creato un servizio che sostituisce 6 ore di lavoro manuale al giorno.,
+  }
+- {
+    id: hard-hourly,
+    kind: object,
+    language: en,
+    supported: false,
+    sources: [ach-pagofacile-reconciliation],
+    text: Built the hourly reconciliation service.,
+  }
+- {
+    id: hard-authorities,
+    kind: object,
+    language: en,
+    supported: false,
+    sources: [ach-cantiere-offline],
+    text: Developed the offline mode of an application used by 14 public authorities.,
+  }
+- {
+    id: hard-average,
+    kind: object,
+    language: en,
+    supported: false,
+    sources: [ach-pagofacile-query-latency],
+    text: Lowered the average latency of the transaction search to 250 milliseconds.,
+  }
+- {
+    id: hard-swap,
+    kind: direction,
+    language: de,
+    supported: false,
+    sources: [ach-pagofacile-query-latency],
+    text: Latenz der Transaktionssuche von 250 Millisekunden auf 1.8 Sekunden gebracht.,
+  }
+- {
+    id: hard-aws,
+    kind: context,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-k8s-migration, ach-lagonube-cloud-cost],
+    text: "Together with two colleagues, migrated 32 services to Kubernetes on AWS and so cut cloud spending by 27%.",
+  }
+- {
+    id: hard-city,
+    kind: context,
+    language: it,
+    supported: false,
+    sources: [exp-pagofacile-2019],
+    text: Ho lavorato per PagoFacile AG a Ginevra.,
+  }
+- {
+    id: hard-compliance,
+    kind: context,
+    language: en,
+    supported: false,
+    sources: [exp-tecnobanca-2014],
+    text: Worked on regulatory compliance for back-office banking applications.,
+  }
+- {
+    id: hard-built-platforms,
+    kind: statement,
+    language: it,
+    supported: false,
+    sources: [stm-platform-motivation],
+    text: Ho costruito piattaforme che permettono ad altri team di rilasciare in autonomia.,
+  }
+- {
+    id: hard-same-role,
+    kind: reference,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-cloud-cost],
+    text: "There, after leading the migration, cut monthly cloud spending by 27%.",
+  }

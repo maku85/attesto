@@ -1,0 +1,16 @@
+Platform Engineer, Geneva (hybrid)
+
+Sampletrade International runs a commodities trading platform used in nine countries. Our platform group
+gives forty product engineers a paved road to production.
+
+What you will do
+- Operate and extend our Kubernetes clusters
+- Own our Terraform modules and review changes from other teams
+- Shorten the path from commit to production
+
+What we look for
+- 4+ years of experience with Kubernetes
+- Strong Terraform and AWS skills
+- Experience migrating workloads from virtual machines to containers
+- Clear written English; French is an advantage
+- Nice to have: Go, service meshes such as Istio

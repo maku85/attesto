@@ -19,7 +19,6 @@
   ],
   "scripts": {
     "attesto": "node --disable-warning=ExperimentalWarning src/cli/main.ts",
-    "judge:probe": "node --disable-warning=ExperimentalWarning evals/judge-probe.ts",
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc",
     "lint": "eslint . && prettier --check .",

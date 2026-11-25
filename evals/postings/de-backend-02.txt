@@ -1,0 +1,17 @@
+Backend-Entwickler:in Node.js (100 %), Bern
+
+Die Fahrplan Muster AG betreibt die Verkaufsplattform mehrerer regionaler Verkehrsbetriebe. Wir suchen
+Verstärkung für das Team Zahlungen und Abos.
+
+Aufgaben
+- Entwicklung und Betrieb von Diensten in TypeScript und Node.js
+- Anbindung von Zahlungsanbietern und täglicher Abgleich der Buchungen
+- Optimierung von Datenbankabfragen in PostgreSQL
+
+Anforderungen
+- Mehrjährige Erfahrung mit TypeScript und Node.js
+- Sehr gute SQL-Kenntnisse, vorzugsweise PostgreSQL
+- Erfahrung mit ereignisgesteuerten Architekturen, zum Beispiel Kafka
+- Abgeschlossenes Informatikstudium
+- Deutsch C1, Französisch von Vorteil
+- Erfahrung im Zahlungsverkehr ist ein Plus

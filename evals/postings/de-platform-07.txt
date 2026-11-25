@@ -1,0 +1,10 @@
+Plattformingenieur:in Cloud-Kosten (FinOps), Zug
+
+Die Handelsbeispiel AG betreibt über tausend Container auf AWS. Wir wollen unsere Cloud-Ausgaben verstehen
+und senken.
+
+Du analysierst Kosten pro Team und Namespace, dimensionierst Node-Pools passend und baust Werkzeuge, mit
+denen Teams ihre Kosten selbst sehen. Du arbeitest mit Kubernetes, Terraform und AWS.
+
+Voraussetzungen: nachweisbare Erfolge bei der Senkung von Cloud-Kosten, gute Kenntnisse in Kubernetes und
+AWS, Programmiererfahrung in TypeScript oder Python. Eine FinOps-Zertifizierung ist ein Plus.

@@ -1,0 +1,11 @@
+AI Platform Engineer, Lausanne
+
+Demo Robotics needs an engineer to bring language-model features into production.
+
+- Build and operate retrieval-augmented generation services
+- Expose internal tools to assistants through MCP servers
+- Set up evaluation and monitoring for model quality
+- Run everything on Kubernetes
+
+Must have: production experience with LLM applications, Python, Kubernetes. Nice to have: TypeScript, open
+source contributions, a PhD in machine learning.

@@ -1,0 +1,139 @@
+# False claims that code must catch, without asking a judge.
+- {
+    id: code-number,
+    kind: number,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-deploy-time],
+    text: Reduced the median deployment time from 45 to 4 minutes.,
+  }
+- {
+    id: code-percent,
+    kind: number,
+    language: it,
+    supported: false,
+    sources: [ach-lagonube-cloud-cost],
+    text: Ho ridotto la spesa cloud mensile del 72%.,
+  }
+- {
+    id: code-word,
+    kind: number,
+    language: de,
+    supported: false,
+    sources: [ach-lagonube-mentoring],
+    text: Zwölf Junior Engineers als Mentor:in begleitet.,
+  }
+- {
+    id: code-derived,
+    kind: number,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-deploy-time],
+    text: Reduced the median deployment time by 82%.,
+  }
+- {
+    id: code-added-percent,
+    kind: number,
+    language: it,
+    supported: false,
+    sources: [ach-pagofacile-iac],
+    text: Ho portato su Terraform il 100% dell'infrastruttura AWS del team pagamenti.,
+  }
+- {
+    id: code-unit,
+    kind: number,
+    language: en,
+    supported: false,
+    sources: [ach-pagofacile-query-latency],
+    text: Lowered the 95th percentile latency to 250 microseconds and 1.8 milliseconds.,
+  }
+- {
+    id: code-rounded-years,
+    kind: number,
+    language: en,
+    supported: false,
+    sources: [drv-exp-lagonube-2022],
+    text: Has worked at LagoNube SA for 5 years.,
+  }
+- {
+    id: code-kafka-years,
+    kind: number,
+    language: de,
+    supported: false,
+    sources: [skl-kafka, drv-skl-kafka],
+    text: Sechs Jahre Erfahrung mit Apache Kafka.,
+  }
+- {
+    id: code-date,
+    kind: date,
+    language: en,
+    supported: false,
+    sources: [ach-cantiere-ci],
+    text: Set up the first automated pipeline of the company in March 2017.,
+  }
+- {
+    id: code-year,
+    kind: date,
+    language: it,
+    supported: false,
+    sources: [cert-k8s-admin-2023],
+    text: Certificazione Kubernetes Administrator ottenuta nel 2025.,
+  }
+- {
+    id: code-million,
+    kind: number,
+    language: it,
+    supported: false,
+    sources: [ach-cantiere-offline],
+    text: Ho sviluppato la modalità offline di un'applicazione usata da un milione di persone.,
+  }
+- {
+    id: code-product,
+    kind: name,
+    language: en,
+    supported: false,
+    sources: [ach-pagofacile-iac],
+    text: "Moved the infrastructure of the payments team, including EC2 and S3, to Terraform.",
+  }
+- {
+    id: code-employer,
+    kind: placement,
+    slot: exp-pagofacile-2019,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-cloud-cost],
+    text: Cut monthly cloud spending by 27%.,
+  }
+- {
+    id: code-unknown,
+    kind: placement,
+    language: en,
+    supported: false,
+    sources: [ach-lagonube-promotion],
+    text: Was promoted to principal engineer.,
+  }
+- {
+    id: code-no-source,
+    kind: placement,
+    language: en,
+    supported: false,
+    sources: [],
+    text: Is a natural leader.,
+  }
+- {
+    id: code-second-sentence,
+    kind: placement,
+    language: en,
+    supported: false,
+    sources: [ach-cantiere-ci],
+    text: Set up the first automated build pipeline of the company. Later led the whole department.,
+  }
+- {
+    id: code-statement-in-cv,
+    kind: placement,
+    slot: summary,
+    language: en,
+    supported: false,
+    sources: [stm-platform-motivation],
+    text: Is interested in building platforms.,
+  }

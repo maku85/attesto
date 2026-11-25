@@ -1,0 +1,11 @@
+DevOps Engineer 80–100%, Bellinzona
+
+Il Centro Informatico Esempio fornisce servizi ai comuni del Cantone. Cerchiamo una persona per
+automatizzare la messa in produzione.
+
+Ti occuperai di pipeline CI/CD, container Docker e infrastruttura come codice con Terraform. Collaborerai
+con quattro gruppi di sviluppo.
+
+Richiediamo esperienza documentata con CI/CD e Docker, buone conoscenze di Linux e di Kubernetes, e un
+diploma in informatica. Sono graditi Ansible, esperienza nella pubblica amministrazione e conoscenza del
+tedesco.

@@ -1,0 +1,9 @@
+# Claims written by a person who has not looked at the prompt of the judge. Half true, half false.
+# Write about the person in examples/kb. Sources are the entries the claim would cite.
+#
+# - id: blind-1
+#   kind: "true"          # or a word for what is wrong, such as role, scope, effect, time
+#   language: it          # it, en or de
+#   supported: true
+#   sources: [ach-lagonube-mentoring]
+#   text: One sentence.

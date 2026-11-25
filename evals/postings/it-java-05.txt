@@ -1,0 +1,9 @@
+Sviluppatore/trice Java, Chiasso
+
+Banca Figurata SA cerca una figura per l'area pagamenti e regolamenti.
+
+Attività: manutenzione evolutiva di applicazioni Java, ottimizzazione di elaborazioni notturne, supporto
+alle verifiche di conformità.
+
+Requisiti indispensabili: cinque anni di esperienza con Java, conoscenza di Spring, esperienza in ambito
+bancario, disponibilità immediata. Requisiti preferenziali: Kafka, tedesco, conoscenza di COBOL.

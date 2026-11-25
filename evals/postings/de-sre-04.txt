@@ -1,0 +1,13 @@
+Site Reliability Engineer, Basel
+
+Beispiel Pharma Data GmbH verarbeitet Messdaten aus Laboren in zwölf Ländern. Du sorgst dafür, dass die
+Plattform zuverlässig bleibt.
+
+- Du definierst Service-Level-Objectives und Fehlerbudgets mit den Produktteams.
+- Du baust das Monitoring mit Prometheus und Grafana aus.
+- Du leitest die Nachbesprechung von Störungen.
+- Du beteiligst dich am Bereitschaftsdienst, etwa jede fünfte Woche.
+
+Wir erwarten mindestens drei Jahre Erfahrung in einer SRE- oder Plattformrolle, sicheren Umgang mit
+Kubernetes und Linux sowie gute Englischkenntnisse. Kenntnisse in Python oder Go und Erfahrung mit
+Kostenoptimierung in der Cloud sind von Vorteil.

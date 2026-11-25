@@ -1,7 +1,9 @@
-# Claims about the example knowledge base that pass the structure and number checks, so that only the
-# judge can tell them apart. "supported" is the label of a person, not of a model.
+# Claims that pass the structure and number checks, so that only the judge can tell them apart.
+# The labels here and in hard.yaml were written together with the prompt of the judge, by the AI
+# assistant this project was built with. blind.yaml is for labels that are independent of it.
 - {
     id: true-paraphrase,
+    kind: "true",
     language: en,
     supported: true,
     sources: [ach-lagonube-deploy-time],
@@ -9,6 +11,7 @@
   }
 - {
     id: true-italian,
+    kind: "true",
     language: it,
     supported: true,
     sources: [ach-lagonube-cloud-cost],
@@ -16,6 +19,7 @@
   }
 - {
     id: true-translated,
+    kind: "true",
     language: de,
     supported: true,
     sources: [ach-lagonube-k8s-migration],
@@ -23,6 +27,7 @@
   }
 - {
     id: true-contribution,
+    kind: "true",
     language: en,
     supported: true,
     sources: [ach-lagonube-docs-assistant],
@@ -30,6 +35,7 @@
   }
 - {
     id: true-duration,
+    kind: "true",
     language: en,
     supported: true,
     sources: [drv-exp-pagofacile-2019],
@@ -37,6 +43,7 @@
   }
 - {
     id: true-units,
+    kind: "true",
     language: de,
     supported: true,
     sources: [ach-tecnobanca-batch],
@@ -44,6 +51,7 @@
   }
 - {
     id: true-first,
+    kind: "true",
     language: en,
     supported: true,
     sources: [ach-cantiere-ci],
@@ -51,6 +59,7 @@
   }
 - {
     id: true-motivation,
+    kind: "true",
     language: it,
     supported: true,
     sources: [stm-platform-motivation],
@@ -58,6 +67,7 @@
   }
 - {
     id: true-context,
+    kind: "true",
     language: en,
     supported: true,
     sources: [ach-pagofacile-iac],
@@ -65,6 +75,7 @@
   }
 - {
     id: true-expired,
+    kind: "true",
     language: en,
     supported: true,
     sources: [cert-k8s-admin-2023],
@@ -72,6 +83,7 @@
   }
 - {
     id: true-level,
+    kind: "true",
     language: en,
     supported: true,
     sources: [skl-postgresql],
@@ -79,6 +91,7 @@
   }
 - {
     id: true-omission,
+    kind: "true",
     language: it,
     supported: true,
     sources: [ach-lagonube-mentoring],
@@ -87,6 +100,7 @@
 
 - {
     id: false-led,
+    kind: role,
     language: en,
     supported: false,
     sources: [ach-lagonube-docs-assistant],
@@ -94,6 +108,7 @@
   }
 - {
     id: false-sole-credit,
+    kind: role,
     language: de,
     supported: false,
     sources: [ach-lagonube-k8s-migration],
@@ -101,6 +116,7 @@
   }
 - {
     id: false-effect,
+    kind: effect,
     language: en,
     supported: false,
     sources: [ach-pagofacile-iac],
@@ -108,6 +124,7 @@
   }
 - {
     id: false-quality,
+    kind: effect,
     language: it,
     supported: false,
     sources: [ach-cantiere-ci],
@@ -115,6 +132,7 @@
   }
 - {
     id: false-level,
+    kind: level,
     language: en,
     supported: false,
     sources: [skl-kafka],
@@ -122,6 +140,7 @@
   }
 - {
     id: false-skill,
+    kind: context,
     language: en,
     supported: false,
     sources: [ach-pagofacile-throughput, skl-python],
@@ -129,6 +148,7 @@
   }
 - {
     id: false-employer,
+    kind: context,
     language: en,
     supported: false,
     sources: [ach-lagonube-k8s-migration, exp-pagofacile-2019],
@@ -136,6 +156,7 @@
   }
 - {
     id: false-object,
+    kind: object,
     language: en,
     supported: false,
     sources: [ach-lagonube-mentoring],
@@ -143,6 +164,7 @@
   }
 - {
     id: false-rate,
+    kind: object,
     language: en,
     supported: false,
     sources: [ach-lagonube-alerting],
@@ -150,6 +172,7 @@
   }
 - {
     id: false-direction,
+    kind: direction,
     language: en,
     supported: false,
     sources: [ach-lagonube-alerting],
@@ -157,6 +180,7 @@
   }
 - {
     id: false-vague-amount,
+    kind: amount,
     language: en,
     supported: false,
     sources: [ach-lagonube-cloud-cost],
@@ -164,6 +188,7 @@
   }
 - {
     id: false-expired,
+    kind: time,
     language: en,
     supported: false,
     sources: [cert-k8s-admin-2023],
@@ -171,6 +196,7 @@
   }
 - {
     id: false-self-praise,
+    kind: statement,
     language: it,
     supported: false,
     sources: [stm-platform-motivation],
@@ -178,6 +204,7 @@
   }
 - {
     id: false-years,
+    kind: scope,
     language: it,
     supported: false,
     sources: [skl-terraform],

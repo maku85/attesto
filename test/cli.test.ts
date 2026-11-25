@@ -80,6 +80,8 @@ it.each([
   [["analyze"]],
   [["verify"]],
   [["runs"]],
+  [["eval", "--only", "nothing"]],
+  [["eval", "--repeat", "0"]],
   [["generate"]],
   [["generate", "--type", "memo"]],
   [["generate", "--job", "x", "--type", "cv", "--lang", "fr", "--market", "ch-it"]],

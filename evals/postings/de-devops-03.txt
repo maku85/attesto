@@ -1,0 +1,17 @@
+DevOps Engineer (60–80 %), St. Gallen
+
+Für unsere Kundin, eine mittelgrosse Versicherung, suchen wir eine Person für den Ausbau der
+Auslieferungsprozesse.
+
+Das machst du
+- Aufbau einheitlicher Build- und Testpipelines für rund dreissig Teams
+- Containerisierung bestehender Java-Anwendungen mit Docker
+- Schulung der Entwicklungsteams
+
+Das bringst du mit
+- Fundierte Erfahrung mit CI/CD, idealerweise GitLab
+- Docker und Kubernetes im produktiven Einsatz
+- Grundkenntnisse in Java
+- Ansible oder Terraform
+- Fliessendes Deutsch
+- Erfahrung in regulierten Branchen wünschenswert

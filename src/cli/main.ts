@@ -1,15 +1,20 @@
 #!/usr/bin/env -S node --disable-warning=ExperimentalWarning
-import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { parseArgs } from "node:util";
 import { serveStdio } from "@modelcontextprotocol/server/stdio";
 import { ENTRY_TYPES } from "../kb/entries.ts";
+import { writeAuditSample } from "../evals/audit.ts";
+import { AUDIT_SAMPLE, EXAMPLE_KB, README, RECORDINGS, RESULTS } from "../evals/paths.ts";
+import { fullReport, summaryTable, updateReadme } from "../evals/report.ts";
+import { runEval } from "../evals/run.ts";
 import { loadKb, resolveKbDir } from "../kb/load.ts";
 import { LANGS, type KnowledgeBase } from "../kb/schema.ts";
 import { getEntry, searchKb } from "../kb/search.ts";
 import { AnthropicProvider } from "../llm/anthropic.ts";
 import { resolveJudgeModel, resolveModel } from "../llm/provider.ts";
+import { ReplayProvider } from "../llm/replay.ts";
 import { createServer } from "../mcp/server.ts";
 import { DOCUMENT_TYPES, MARKETS, TONES, VerifiableDocument } from "../pipeline/document.ts";
 import { analyzeAndStore, produce, today } from "../pipeline/produce.ts";
@@ -31,10 +36,13 @@ const USAGE = `Usage:
       --market ch-it|ch-en|ch-de [--out <dir>] [--tone formal|warm|direct]
       [--photo] [--no-regenerate] [--kb <dir>]
   attesto verify <document.json> [--kb <dir>]
+  attesto eval [--live] [--only seeded|postings] [--repeat <n>] [--audit]
   attesto runs list
   attesto runs show <id>
   attesto mcp [--kb <dir>]
 
+eval replays recorded answers; with --live it pays for the ones that are missing. --audit draws claims
+for a person to label.
 Documents are written to --out, else ./out. The MCP server writes to $ATTESTO_OUT, else
 ~/.attesto/out.
 The knowledge base directory is --kb, else $ATTESTO_KB, else ~/.attesto/kb.
@@ -180,6 +188,51 @@ async function verify(args: string[]): Promise<void> {
   if (!report.supported) process.exitCode = 1;
 }
 
+async function evaluate(args: string[]): Promise<void> {
+  const { values } = parseArgs({
+    args,
+    options: {
+      live: { type: "boolean", default: false },
+      only: { type: "string" },
+      repeat: { type: "string", default: "3" },
+      audit: { type: "boolean", default: false },
+    },
+  });
+  const only =
+    values.only === undefined ? undefined : oneOf("--only", values.only, ["seeded", "postings"]);
+  const repeat = Number(values.repeat);
+  if (!Number.isInteger(repeat) || repeat < 1)
+    throw new UsageError("Expected --repeat to be 1 or more");
+  if (values.audit && existsSync(AUDIT_SAMPLE)) throw new Error(`${AUDIT_SAMPLE} already exists`);
+  // Kept apart from the runs about a real person.
+  const db = openDb(join(dirname(resolveDbPath()), "evals.db"));
+  try {
+    const report = await runEval({
+      db,
+      provider: new ReplayProvider(RECORDINGS, values.live ? new AnthropicProvider() : undefined),
+      mode: values.live ? "live" : "replay",
+      draftModel: resolveModel(),
+      judgeModel: resolveJudgeModel(),
+      repeat,
+      only,
+      date: today(),
+      onProgress: (step) => console.error(`${step}…`),
+    });
+    if (values.audit) {
+      const kb = requireKb(EXAMPLE_KB);
+      console.error(`${writeAuditSample(report.postings, kb)} claims to label in ${AUDIT_SAMPLE}`);
+    }
+    console.log(only ? fullReport(report) : summaryTable(report));
+    // A partial run must not replace the published results.
+    if (!only) {
+      writeFileSync(RESULTS, fullReport(report));
+      writeFileSync(README, updateReadme(readFileSync(README, "utf8"), report));
+    }
+  } finally {
+    db.close();
+  }
+}
+
 function runs(args: string[]): void {
   const { positionals } = parseArgs({ args, allowPositionals: true, options: {} });
   const [action, ...rest] = positionals;
@@ -253,6 +306,7 @@ const COMMANDS: Record<string, (args: string[]) => void | Promise<void>> = {
   analyze,
   generate,
   verify,
+  eval: evaluate,
   runs,
   mcp,
 };

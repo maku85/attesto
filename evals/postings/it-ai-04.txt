@@ -1,0 +1,9 @@
+AI Engineer, Lugano
+
+Archivio Modello Sagl digitalizza documenti per studi legali e vuole offrire ricerche in linguaggio
+naturale.
+
+Requisiti: esperienza con modelli linguistici e ricerca su documenti, Python a livello professionale,
+conoscenza di PostgreSQL, capacità di portare un prototipo in produzione. Sono un vantaggio la conoscenza
+del Model Context Protocol, di TypeScript e un'esperienza in ambito giuridico. Si richiede un dottorato o
+una laurea magistrale in intelligenza artificiale.

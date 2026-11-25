@@ -1,0 +1,13 @@
+Engineering Manager, Platform, Basel
+
+Sample Logistics is looking for a manager for two platform teams with eleven people in total.
+
+Requirements
+- At least three years of people management, including hiring and performance reviews
+- Background in platform or infrastructure engineering
+- Experience owning a budget of over one million francs
+- Fluent English and German
+
+Nice to have
+- Kubernetes, Terraform
+- Experience with mentoring programmes

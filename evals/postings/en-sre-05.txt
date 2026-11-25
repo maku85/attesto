@@ -1,0 +1,8 @@
+Site Reliability Engineer, Zurich
+
+Placeholder Streaming serves video to two million users. Our SRE team owns reliability, not just uptime
+dashboards.
+
+We expect experience with service-level objectives, alerting that people trust, and incident response. You
+know Prometheus and Grafana well, you can read and write Go or Python, and you have run Kubernetes at
+scale, meaning more than one thousand nodes. Experience leading incident reviews is welcome.

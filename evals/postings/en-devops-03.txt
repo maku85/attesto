@@ -1,0 +1,8 @@
+DevOps Engineer, remote within Switzerland
+
+Northwind Sample Health builds software for clinics. We need someone to modernize how we build and ship.
+
+You have set up CI/CD pipelines from scratch, you are comfortable with Docker and infrastructure as code,
+and you enjoy working closely with developers. We use GitHub Actions, Terraform and Azure. Knowledge of
+Azure is required. Experience with medical device regulation is a plus. You will be on call one week in
+six.

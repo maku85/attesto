@@ -1,0 +1,16 @@
+Senior Backend Engineer (Payments), Zurich
+
+Example Payments Ltd processes card payments for small merchants. You will join a team of seven.
+
+Responsibilities
+- Design event-driven services in TypeScript
+- Improve the throughput of our Kafka pipelines
+- Keep reconciliation accurate and automated
+- Mentor two junior colleagues
+
+Requirements
+- 5+ years building backend services in Node.js or TypeScript
+- Hands-on experience with Kafka
+- Deep knowledge of PostgreSQL query optimization
+- Experience in payments or banking
+- Nice to have: PCI DSS knowledge, Rust

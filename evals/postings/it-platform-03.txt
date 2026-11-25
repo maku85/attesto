@@ -1,0 +1,11 @@
+Ingegnere/a di piattaforma senior, Mendrisio
+
+Moda Campione SA vende online in tutta Europa. Il gruppo piattaforma sostiene quindici squadre di prodotto.
+
+- Evoluzione della piattaforma Kubernetes
+- Riduzione dei tempi di rilascio e dei costi cloud
+- Monitoraggio con Prometheus e obiettivi di livello di servizio
+
+Cerchiamo almeno quattro anni di esperienza con Kubernetes, padronanza di Terraform e AWS, capacità di
+affiancare colleghi più giovani. Apprezziamo contributi a progetti open source e una certificazione
+Kubernetes in corso di validità.

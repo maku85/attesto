@@ -1,0 +1,15 @@
+AI Engineer (80–100 %), Winterthur
+
+Die Textwerk Muster AG baut Assistenzsysteme für technische Dokumentation.
+
+Deine Rolle: Du entwickelst Anwendungen mit grossen Sprachmodellen, von der Suche in Dokumenten (RAG) bis
+zur Auswertung der Antwortqualität. Du stellst Werkzeuge über das Model Context Protocol bereit und
+bringst Prototypen in den Betrieb.
+
+Dein Profil
+- Erfahrung mit LLM-Anwendungen und Retrieval-Augmented Generation
+- Python und TypeScript
+- Vektordatenbanken, gerne auch PostgreSQL mit pgvector
+- Erfahrung mit der systematischen Evaluation von Sprachmodellen
+- Masterabschluss in Informatik oder gleichwertig
+- Von Vorteil: Veröffentlichungen oder Open-Source-Beiträge
