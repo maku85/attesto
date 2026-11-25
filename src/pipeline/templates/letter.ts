@@ -17,10 +17,22 @@ export function letterTemplate({ document, kb, analysis }: TemplateInput): Block
     contacts.email,
     contacts.phone,
   ];
-  const recipient = [analysis.company, analysis.location].filter((value) => value !== null);
+  // A place alone is not a recipient.
+  const recipient = analysis.company
+    ? [analysis.company, analysis.location].filter((value) => value !== null)
+    : [];
   const body = document.sections
     .flatMap(({ claims }) => claims)
     .map(({ id, text, sources }): Line => ({ text, origin: "claim", sources, claimId: id }));
+
+  // Why the person writes comes first, as a paragraph of its own.
+  const motivations = new Set(
+    kb.statements.filter(({ kind }) => kind === "motivation").map(({ id }) => id),
+  );
+  const isMotivation = ({ sources }: Line) =>
+    sources.length > 0 && sources.every((id) => motivations.has(id));
+  const opening = body.filter(isMotivation);
+  const rest = body.filter((line) => !isMotivation(line));
 
   const posting = (text: string): Line => ({ text, origin: "posting", sources: [] });
   const paragraph = (...lines: Line[]): Block => ({ kind: "paragraph", lines });
@@ -34,7 +46,8 @@ export function letterTemplate({ document, kb, analysis }: TemplateInput): Block
     { kind: "heading", line: posting(label.subject(analysis.title)) },
     paragraph(fixed(label.salutation)),
     paragraph(posting(label.opening(analysis.title, analysis.company))),
-    ...chunk(body, SENTENCES_PER_PARAGRAPH).map((lines) => paragraph(...lines)),
+    ...(opening.length > 0 ? [paragraph(...opening)] : []),
+    ...chunk(rest, SENTENCES_PER_PARAGRAPH).map((lines) => paragraph(...lines)),
     ...(person.workCertificatesAvailable ? [paragraph(fromKb(label.certificates, person.id))] : []),
     paragraph(fixed(label.invitation)),
     { kind: "lines", lines: [fixed(label.closing)] },

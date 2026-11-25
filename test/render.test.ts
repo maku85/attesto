@@ -221,6 +221,40 @@ describe("letter", () => {
     expect(output).not.toContain("null");
   });
 
+  it("shows no recipient without a company, even if the place is known", () => {
+    const place = { ...analysis(), location: "Bern or Basel" };
+    expect(markdown({ type: "letter" }, { analysis: place })).toContain(
+      "Esempio SA\\\nBern or Basel",
+    );
+    expect(markdown({ type: "letter" }, { analysis: { ...place, company: null } })).not.toContain(
+      "Bern",
+    );
+  });
+
+  it("opens with what rests on a motivation alone", () => {
+    const claim = (id: string, text: string, ...sources: string[]) => ({
+      id,
+      text,
+      sources,
+      addresses: [],
+    });
+    const output = markdown({
+      type: "letter",
+      sections: [
+        {
+          slot: "letter-body",
+          claims: [
+            claim("c-1", "Worked.", "ach-cantiere-ci"),
+            claim("c-2", "Available.", "stm-availability"),
+            claim("c-3", "Mixed.", "stm-platform-motivation", "ach-cantiere-ci"),
+            claim("c-4", "Motivated.", "stm-platform-motivation"),
+          ],
+        },
+      ],
+    });
+    expect(output).toContain("Motivated.\n\nWorked. Available. Mixed.");
+  });
+
   it("does without a company", () => {
     const output = markdown({ type: "letter" }, { analysis: { ...analysis(), company: null } });
     expect(output).toContain("“Platform Engineer”.");

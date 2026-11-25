@@ -47,7 +47,8 @@ const STYLE: Record<Document["type"], string> = {
   cv: `The text of a CV is impersonal: no first-person pronouns or verbs ("Developed…", "Sviluppo di…",
 "Entwicklung von…"). For a past role avoid wording that can be read as the present, such as the Italian
 "Lavoro su…".`,
-  letter: `A cover letter is in the first person. Choose wording that does not reveal the candidate's gender.`,
+  letter: `A cover letter is in the first person. Choose wording that does not reveal the candidate's gender.
+After naming an employer once, leave out its legal form: "Example", not "Example Ltd".`,
 };
 
 const SLOT_RULES: Record<Document["type"], string> = {
