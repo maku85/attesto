@@ -4,10 +4,13 @@ import { ENTRY_TYPES, listEntries } from "../kb/entries.ts";
 import { loadKb } from "../kb/load.ts";
 import type { KnowledgeBase } from "../kb/schema.ts";
 import { getEntry, searchKb } from "../kb/search.ts";
-import { resolveModel, type LlmProvider } from "../llm/provider.ts";
+import { resolveJudgeModel, resolveModel, type LlmProvider } from "../llm/provider.ts";
 import { analyzePosting } from "../pipeline/analyze.ts";
+import { VerifiableDocument } from "../pipeline/document.ts";
+import { changedSources, verifyDocument } from "../pipeline/verify/document.ts";
 import { openDb } from "../store/db.ts";
 import { saveJobAnalysis } from "../store/jobs.ts";
+import { getRun } from "../store/runs.ts";
 
 export type ServerConfig = {
   kbDir: string;
@@ -85,6 +88,43 @@ export function createServer({ kbDir, dbPath, provider }: ServerConfig): McpServ
         const analysis = await analyzePosting(provider(), model, text);
         const jobAnalysisId = saveJobAnalysis(db, { posting: text, model, analysis });
         return json({ jobAnalysisId, analysis });
+      } finally {
+        db.close();
+      }
+    },
+  );
+
+  server.registerTool(
+    "document_verify",
+    {
+      description:
+        "Verify every claim of an attesto document (JSON) against the knowledge base: structure, " +
+        "numbers and whether the cited entries support it.",
+      inputSchema: z.object({ document: VerifiableDocument }),
+      annotations: { readOnlyHint: true, openWorldHint: true },
+    },
+    async ({ document }) =>
+      json(await verifyDocument(document, readKb(kbDir), provider(), resolveJudgeModel())),
+  );
+
+  server.registerTool(
+    "run_get",
+    {
+      description:
+        "Get a past run with its document, the decision on every claim, and the entries that have " +
+        "changed since.",
+      inputSchema: z.object({ runId: z.string() }),
+      annotations: readOnly,
+    },
+    ({ runId }) => {
+      const db = openDb(dbPath);
+      try {
+        const run = getRun(db, runId);
+        if (!run) throw new Error(`No run has the ID ${runId}`);
+        return json({
+          ...run,
+          changedSources: changedSources(run.sources, readKb(kbDir), run.asOf),
+        });
       } finally {
         db.close();
       }

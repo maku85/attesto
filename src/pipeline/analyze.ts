@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { asData } from "../llm/prompt.ts";
 import type { LlmProvider } from "../llm/provider.ts";
 
 const MAX_POSTING_LENGTH = 50_000;
@@ -56,12 +57,10 @@ export async function analyzePosting(
   if (posting.length > MAX_POSTING_LENGTH) {
     throw new Error(`The job posting is longer than ${MAX_POSTING_LENGTH} characters`);
   }
-  // Without this, a posting could close the tag and pose as the prompt.
-  const data = posting.replaceAll("<", "&lt;");
   const extracted = await provider.generate({
     model,
     system: SYSTEM,
-    prompt: `<posting>\n${data}\n</posting>`,
+    prompt: `<posting>\n${asData(posting)}\n</posting>`,
     schema: ExtractedAnalysis,
   });
   return {

@@ -6,9 +6,17 @@ import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 import { InMemoryTransport } from "@modelcontextprotocol/server";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { LlmProvider } from "../src/llm/provider.ts";
+import { generateDocument } from "../src/pipeline/run.ts";
 import { createServer } from "../src/mcp/server.ts";
 import { openDb } from "../src/store/db.ts";
-import { EXAMPLE_KB, FakeProvider, ROOT, analysis } from "./fixtures.ts";
+import {
+  EXAMPLE_KB,
+  FakeProvider,
+  PipelineProvider,
+  ROOT,
+  analysis,
+  runRequest,
+} from "./fixtures.ts";
 
 let dir: string;
 let dbPath: string;
@@ -69,6 +77,33 @@ describe("in process", () => {
     db.close();
   });
 
+  it("verifies a document, and returns a stored run", async () => {
+    const provider = new PipelineProvider({
+      draft: [["letter-body", "Reduced the median deployment time.", ["ach-lagonube-deploy-time"]]],
+    });
+    await connect(EXAMPLE_KB, () => provider);
+    const db = openDb(dbPath);
+    const { document } = await generateDocument({
+      ...runRequest(db, provider),
+      type: "letter",
+    });
+    db.close();
+
+    const verified = await call("document_verify", { document });
+    expect(JSON.parse(verified.text)).toMatchObject({ supported: true, changedSources: [] });
+    const stored = await call("run_get", { runId: document.runId });
+    expect(JSON.parse(stored.text)).toMatchObject({
+      status: "completed",
+      document,
+      verifications: [{ decision: "accepted" }],
+      changedSources: [],
+    });
+    expect(await call("run_get", { runId: "nope" })).toMatchObject({ isError: true });
+    expect(await call("document_verify", { document: { sections: [] } })).toMatchObject({
+      isError: true,
+    });
+  });
+
   it("serves the knowledge base without an LLM", async () => {
     await connect(EXAMPLE_KB, noProvider);
     const search = await call("kb_search", { query: "kafka", filters: { types: ["skill"] } });
@@ -113,10 +148,12 @@ it("speaks MCP over stdio through the CLI", async () => {
   );
   const { tools } = await client.listTools();
   expect(tools.map(({ name }) => name).sort()).toEqual([
+    "document_verify",
     "job_analyze",
     "kb_get",
     "kb_search",
     "kb_validate",
+    "run_get",
   ]);
   expect(JSON.parse((await call("kb_get", { id: "ach-cantiere-ci" })).text)).toMatchObject({
     ownerId: "exp-cantiere-2017",

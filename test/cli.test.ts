@@ -78,11 +78,32 @@ it.each([
   [["get"]],
   [["get", "a", "b"]],
   [["analyze"]],
+  [["verify"]],
+  [["runs"]],
+  [["runs", "show"]],
+  [["runs", "list", "x"]],
   [["search", "x", "--type", "nope"]],
 ])("exits with 2 on wrong usage: %j", (args) => {
   const { status, stderr } = attesto(args);
   expect(stderr).toContain("Usage:");
   expect(status).toBe(2);
+});
+
+it("lists no runs in a new database, and fails for an unknown one", () => {
+  const dir = mkdtempSync(join(tmpdir(), "attesto-cli-"));
+  const env = { ATTESTO_DB: join(dir, "attesto.db") };
+  expect(attesto(["runs", "list"], env)).toMatchObject({ status: 0, stdout: "" });
+  expect(attesto(["runs", "show", "nope"], env)).toMatchObject({
+    status: 1,
+    stderr: "No run has the ID nope\n",
+  });
+  rmSync(dir, { recursive: true });
+});
+
+it("rejects a file that is not an attesto document", () => {
+  const { status, stderr } = attesto(["verify", join(ROOT, "package.json"), "--kb", EXAMPLE_KB]);
+  expect(stderr).toContain("is not an attesto document");
+  expect(status).toBe(1);
 });
 
 it("prints help", () => {

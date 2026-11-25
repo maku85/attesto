@@ -33,7 +33,8 @@ export type Entry = {
 };
 
 export function listEntries(kb: KnowledgeBase): Entry[] {
-  const title = (text: Text) => original(text, kb.person.defaultLanguage);
+  const title = (text: Text) =>
+    localize(text, kb.person.defaultLanguage, kb.person.defaultLanguage);
   const entries: Entry[] = [];
 
   const add = (
@@ -152,9 +153,9 @@ export function listEntries(kb: KnowledgeBase): Entry[] {
   return entries;
 }
 
-/** The text in the default language, which validation guarantees to be present. */
-function original(text: Text, defaultLanguage: Lang): string {
-  return typeof text === "string" ? text : (text[defaultLanguage] ?? "");
+/** Falls back to the default language, which validation guarantees to be present. */
+export function localize(text: Text, lang: Lang, defaultLanguage: Lang): string {
+  return typeof text === "string" ? text : (text[lang] ?? text[defaultLanguage] ?? "");
 }
 
 function variants(text: Text | undefined): string[] {

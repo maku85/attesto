@@ -17,3 +17,8 @@ export class LlmError extends Error {}
 export function resolveModel(): string {
   return process.env.ATTESTO_MODEL || "claude-opus-5-5";
 }
+
+/** Separate, so that the judge does not have to be the model that wrote the text. */
+export function resolveJudgeModel(): string {
+  return process.env.ATTESTO_JUDGE_MODEL || resolveModel();
+}

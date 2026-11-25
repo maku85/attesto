@@ -7,22 +7,29 @@ import { loadKb, resolveKbDir } from "../kb/load.ts";
 import type { KnowledgeBase } from "../kb/schema.ts";
 import { getEntry, searchKb } from "../kb/search.ts";
 import { AnthropicProvider } from "../llm/anthropic.ts";
-import { resolveModel } from "../llm/provider.ts";
+import { resolveJudgeModel, resolveModel } from "../llm/provider.ts";
 import { createServer } from "../mcp/server.ts";
 import { analyzePosting } from "../pipeline/analyze.ts";
+import { VerifiableDocument } from "../pipeline/document.ts";
+import { verifyDocument } from "../pipeline/verify/document.ts";
 import { openDb, resolveDbPath } from "../store/db.ts";
 import { saveJobAnalysis } from "../store/jobs.ts";
+import { getRun, listRuns } from "../store/runs.ts";
+import { z } from "zod";
 
 const USAGE = `Usage:
   attesto validate [--kb <dir>]
   attesto search <query> [--type <type>]... [--skill <id>] [--kb <dir>]
   attesto get <id> [--kb <dir>]
   attesto analyze <posting.txt>
+  attesto verify <document.json> [--kb <dir>]
+  attesto runs list
+  attesto runs show <id>
   attesto mcp [--kb <dir>]
 
 The knowledge base directory is --kb, else $ATTESTO_KB, else ~/.attesto/kb.
-Job analyses are stored in $ATTESTO_DB, else ~/.attesto/attesto.db.
-The model is $ATTESTO_MODEL, else claude-opus-5-5.`;
+Job analyses and runs are stored in $ATTESTO_DB, else ~/.attesto/attesto.db.
+The model is $ATTESTO_MODEL, else claude-opus-5-5. The judge is $ATTESTO_JUDGE_MODEL, else the model.`;
 
 /** Wrong usage, reported together with the usage text. */
 class UsageError extends Error {}
@@ -84,6 +91,48 @@ async function analyze(args: string[]): Promise<void> {
   }
 }
 
+async function verify(args: string[]): Promise<void> {
+  const { values, positionals } = parseArgs({ args, allowPositionals: true, options: kbOption });
+  const file = onlyArgument(positionals, "a document file");
+  const parsed = VerifiableDocument.safeParse(JSON.parse(readFileSync(file, "utf8")));
+  if (!parsed.success) {
+    throw new Error(`${file} is not an attesto document:\n${z.prettifyError(parsed.error)}`);
+  }
+  const kb = requireKb(values.kb);
+  const report = await verifyDocument(
+    parsed.data,
+    kb,
+    new AnthropicProvider(),
+    resolveJudgeModel(),
+  );
+  printJson(report);
+  if (!report.supported) process.exitCode = 1;
+}
+
+function runs(args: string[]): void {
+  const { positionals } = parseArgs({ args, allowPositionals: true, options: {} });
+  const [action, ...rest] = positionals;
+  if (action !== "list" && action !== "show") throw new UsageError("Expected list or show");
+  const id = action === "show" ? onlyArgument(rest, "a run ID") : undefined;
+  if (action === "list" && rest.length > 0) throw new UsageError("list takes no arguments");
+  const db = openDb(resolveDbPath());
+  try {
+    if (id === undefined) {
+      for (const run of listRuns(db)) {
+        console.log(
+          [run.id, run.createdAt, run.status, run.type, run.language, run.market].join("  "),
+        );
+      }
+      return;
+    }
+    const run = getRun(db, id);
+    if (!run) throw new Error(`No run has the ID ${id}`);
+    printJson(run);
+  } finally {
+    db.close();
+  }
+}
+
 function mcp(args: string[]): void {
   const { values } = parseArgs({ args, options: kbOption });
   const config = {
@@ -119,6 +168,8 @@ const COMMANDS: Record<string, (args: string[]) => void | Promise<void>> = {
   search,
   get,
   analyze,
+  verify,
+  runs,
   mcp,
 };
 

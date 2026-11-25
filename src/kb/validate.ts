@@ -1,4 +1,12 @@
-import { KB_FILES, LANGS, type Issue, type KbSection, type KnowledgeBase } from "./schema.ts";
+import { backs, extractQuantities } from "./quantities.ts";
+import {
+  KB_FILES,
+  LANGS,
+  type Issue,
+  type KbSection,
+  type KnowledgeBase,
+  type Lang,
+} from "./schema.ts";
 
 /** Rules that span entries. Assumes every file already matches its schema. */
 export function crossCheck(kb: KnowledgeBase): Issue[] {
@@ -59,12 +67,29 @@ export function crossCheck(kb: KnowledgeBase): Issue[] {
   const { defaultLanguage } = kb.person;
   for (const section of Object.keys(KB_FILES) as KbSection[]) {
     for (const { path, map } of translationMaps(kb[section], "")) {
-      if (!map[defaultLanguage]) {
+      const original = map[defaultLanguage];
+      if (!original) {
         report(section, path, `missing the default language "${defaultLanguage}"`);
+        continue;
+      }
+      for (const lang of LANGS) {
+        const translation = map[lang];
+        if (translation && !sameQuantities(original, defaultLanguage, translation, lang)) {
+          report(section, path, `"${lang}" and "${defaultLanguage}" do not state the same numbers`);
+        }
       }
     }
   }
   return issues;
+}
+
+function sameQuantities(a: string, aLang: Lang, b: string, bLang: Lang): boolean {
+  const inA = extractQuantities(a, aLang);
+  const inB = extractQuantities(b, bLang);
+  return (
+    inA.every((quantity) => inB.some((other) => backs(other, quantity))) &&
+    inB.every((quantity) => inA.some((other) => backs(other, quantity)))
+  );
 }
 
 /** Compares at the coarser precision: 2021-03 is not after 2021. */
@@ -77,7 +102,7 @@ function isAfter(a: string, b: string): boolean {
 function* translationMaps(
   value: unknown,
   path: string,
-): Generator<{ path: string; map: Record<string, unknown> }> {
+): Generator<{ path: string; map: Partial<Record<Lang, string>> }> {
   if (typeof value !== "object" || value === null) return;
   const entries = Object.entries(value);
   const isMap =
@@ -85,7 +110,7 @@ function* translationMaps(
     entries.length > 0 &&
     entries.every(([key]) => (LANGS as readonly string[]).includes(key));
   if (isMap) {
-    yield { path, map: value as Record<string, unknown> };
+    yield { path, map: value };
     return;
   }
   for (const [key, child] of entries) {

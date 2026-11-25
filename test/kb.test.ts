@@ -154,6 +154,26 @@ describe("cross-checks", () => {
   });
 });
 
+describe("translations", () => {
+  const de = "von 45 auf 8 Minuten";
+  it.each([
+    ["a changed number", "von 45 auf 9 Minuten"],
+    ["a dropped number", "deutlich"],
+    ["an added number", "von 45 auf 8 Minuten in 2 Teams"],
+    ["a changed unit", "von 45 auf 8 Stunden"],
+  ])("rejects %s", (_, text) => {
+    replace("experiences.yaml", de, text);
+    expect(issues()).toEqual([
+      'experiences.yaml ([0].achievements[0].statement): "de" and "en" do not state the same numbers',
+    ]);
+  });
+
+  it("accepts another notation of the same number", () => {
+    replace("experiences.yaml", de, "von 0,75 Stunden auf acht Minuten");
+    expect(issues()).toEqual([]);
+  });
+});
+
 describe("resolveKbDir", () => {
   afterEach(() => vi.unstubAllEnvs());
 
