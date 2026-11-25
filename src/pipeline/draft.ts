@@ -49,13 +49,13 @@ const SLOT_RULES: Record<Document["type"], string> = {
   first. Leave out a slot that has nothing relevant. Role, employer, location and period
   are printed above it, so do not repeat them.`,
   letter: `Write the body of a cover letter in the first person: five to nine connected sentences
-in "letter-body". Name the employer or project a result belongs to. Salutation, opening, closing and the name of the company are printed elsewhere.
-Use the candidate's own statements only for motivation and availability. Choose wording that does not
-reveal the candidate's gender.`,
+in "letter-body". Name the employer or project a result belongs to. Salutation, opening, closing and the
+name of the company are printed elsewhere. Use the candidate's own statements only for motivation and
+availability. Choose wording that does not reveal the candidate's gender.`,
 };
 
 /** The places text can go, with the sources each may cite. */
-export function slotsFor(type: Document["type"], sources: Source[]): Map<string, Source[]> {
+function slotsFor(type: Document["type"], sources: Source[]): Map<string, Source[]> {
   const owners = new Set(sources.flatMap(({ ownerId }) => ownerId ?? []));
   const names = type === "letter" ? ["letter-body"] : ["summary", ...owners];
   return new Map(

@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import {
   McpServer,
   ResourceTemplate,
@@ -22,6 +24,13 @@ import { changedSources, verifyDocument } from "../pipeline/verify/document.ts";
 import { openDb } from "../store/db.ts";
 import { getRun } from "../store/runs.ts";
 
+// Resolves to the repository's package.json from both src/mcp and dist/mcp.
+const VERSION = z
+  .object({ version: z.string() })
+  .parse(
+    JSON.parse(readFileSync(join(import.meta.dirname, "..", "..", "package.json"), "utf8")),
+  ).version;
+
 export type ServerConfig = {
   kbDir: string;
   dbPath: string;
@@ -32,7 +41,7 @@ export type ServerConfig = {
 };
 
 export function createServer({ kbDir, dbPath, outDir, provider }: ServerConfig): McpServer {
-  const server = new McpServer({ name: "attesto", version: "0.0.0" });
+  const server = new McpServer({ name: "attesto", version: VERSION });
   const readOnly = { readOnlyHint: true, openWorldHint: false };
 
   server.registerTool(

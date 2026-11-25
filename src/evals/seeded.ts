@@ -69,11 +69,11 @@ export async function runSeeded(
 }
 
 /** Wrong in any repetition counts as wrong. */
-export function isWrong({ claim, attempts }: SeededResult): boolean {
+function isWrong({ claim, attempts }: SeededResult): boolean {
   return attempts.some((checks) => passes(checks) !== claim.supported);
 }
 
-export function wasUnstable({ attempts }: SeededResult): boolean {
+function wasUnstable({ attempts }: SeededResult): boolean {
   return new Set(attempts.map(passes)).size > 1;
 }
 

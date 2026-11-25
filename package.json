@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "A career knowledge base exposed via MCP, with claim-level provenance. No source, no claim.",
   "license": "MIT",
+  "repository": "github:maku85/attesto",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@11.9.0",

@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "attesto": {
+      "command": "node",
+      "args": [
+        "--disable-warning=ExperimentalWarning",
+        "/absolute/path/to/attesto/dist/cli/main.js",
+        "mcp",
+        "--kb",
+        "/absolute/path/to/attesto/examples/kb"
+      ],
+      "env": {
+        "ANTHROPIC_API_KEY": "only needed to analyze, generate and verify"
+      }
+    }
+  }
+}
