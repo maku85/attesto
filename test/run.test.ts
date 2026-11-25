@@ -113,6 +113,23 @@ describe("accepted and rejected claims", () => {
     expect(prompt).toContain("partially: judged partially");
   });
 
+  it.each([
+    ["cv", "is impersonal", "exp-lagonube-2022"],
+    ["letter", "in the first person", "letter-body"],
+  ] as const)(
+    "gives the rewriter of a %s the same style rules as the drafter",
+    async (type, rule, slot) => {
+      const { provider } = await run(
+        { draft: [[slot, "Cut costs by 90%.", ["ach-lagonube-cloud-cost"]]] },
+        { type },
+      );
+      const systems = (["draft", "redraft"] as const).map(
+        (role) => provider.calls.find((call) => call.role === role)?.request.system,
+      );
+      for (const system of systems) expect(system).toContain(rule);
+    },
+  );
+
   it("rejects a source that exists but was not selected", async () => {
     const { verifications } = await run({
       draft: [["summary", "Shortened a batch.", ["ach-tecnobanca-batch"]]],
