@@ -127,6 +127,8 @@ describe("numbers", () => {
     ["Durchsatz auf 2.500 Ereignisse pro Sekunde erhöht.", ["ach-pagofacile-throughput"], "de"],
     ["Worked there for three years.", ["drv-exp-pagofacile-2019"], "en"],
     ["Maintained it since 2021.", ["ach-quietqueue-release"], "en"],
+    ["Uso Node.js e TypeScript, due tecnologie che conosco bene.", ["skl-nodejs"], "it"],
+    ["Worked on two things: pipelines and tests.", deploy, "en"],
   ])("accepts %j", async (text, cited, language) => {
     expect(await check(text, cited, language)).toMatchObject({ numeric: [], passed: true });
   });
@@ -134,6 +136,9 @@ describe("numbers", () => {
   it.each<[string, string[], "it" | "en" | "de", string[]]>([
     ["Cut deployment time to 5 minutes.", deploy, "en", ["5"]],
     ["Cut deployment time to five minutes.", deploy, "en", ["5"]],
+    ["Cut deployment time to 2 minutes.", deploy, "en", ["2"]],
+    ["Mentored four junior engineers.", ["ach-lagonube-mentoring"], "en", ["4"]],
+    ["Migrated 32 services in two years.", ["ach-lagonube-k8s-migration"], "en", ["2"]],
     ["Cut deployment time to 8 seconds.", deploy, "en", ["8"]],
     ["Cut deployment time by 82%.", deploy, "en", ["82"]],
     ["Cut deployment time for 8 teams.", deploy, "en", ["8"]],
