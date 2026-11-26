@@ -62,8 +62,9 @@ flowchart LR
   verify --> runs[(SQLite<br/>runs and decisions)]
 ```
 
-The judge sees one sentence and the entries it cites. It never sees the posting, so a posting cannot
-influence it. Source IDs are enums in the output schema of each request and are checked again by code.
+The judge sees one sentence, the entries it cites, and the requirements it says it answers, marked as
+context. It sees nothing else of the posting. Source IDs are enums in the output schema of each request
+and are checked again by code.
 
 Design decisions are recorded in [docs/adr](docs/adr):
 [YAML as source of truth](docs/adr/0001-yaml-as-source-of-truth.md),

@@ -71,6 +71,7 @@ export async function generateDocument(request: RunRequest): Promise<RunResult> 
         language,
         sources: new Map(originals.map((source) => [source.id, source])),
         sourceLanguage: defaultLanguage,
+        requirements: new Map(job.analysis.requirements.map(({ id, text }) => [id, text])),
       },
       request.regenerate ?? true,
       request.onProgress,

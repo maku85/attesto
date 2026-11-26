@@ -16,6 +16,8 @@ export type VerifyContext = {
   /** Sources in their original language; a claim may cite only these. */
   sources: Map<string, Source>;
   sourceLanguage: Lang;
+  /** What the posting asks for, by requirement ID: context for the judge, never evidence. */
+  requirements?: Map<string, string>;
 };
 export type PlacedClaim = { slot: string; claim: Claim };
 export type Checks = Pick<Verification, "structural" | "numeric" | "entailment">;
@@ -23,14 +25,15 @@ export type Checks = Pick<Verification, "structural" | "numeric" | "entailment">
 /** Structure, then numbers, then meaning. The judge is asked only if the first two pass. */
 export async function checkClaim(
   { slot, claim }: PlacedClaim,
-  { provider, judgeModel, language, sources, sourceLanguage }: VerifyContext,
+  { provider, judgeModel, language, sources, sourceLanguage, requirements }: VerifyContext,
 ): Promise<Checks> {
   const cited = claim.sources.flatMap((id) => sources.get(id) ?? []);
+  const asked = claim.addresses.flatMap((id) => requirements?.get(id) ?? []);
   const structural = checkStructure(claim, slot, language, sources);
   const numeric = checkNumbers(claim.text, language, cited, sourceLanguage);
   const entailment =
     structural.length === 0 && numeric.length === 0
-      ? await judge(provider, judgeModel, claim.text, language, cited)
+      ? await judge(provider, judgeModel, claim.text, language, cited, asked)
       : null;
   return { structural, numeric, entailment };
 }

@@ -33,26 +33,37 @@ These are not supported:
 - An ability or result based only on the candidate's own statement of motivation or availability.
   Such a statement supports only interest or availability.
 
+Text between <asked> tags is what the employer asks for. It is context, not evidence: a sentence may
+refer to it ("you are looking for…"), but whatever it says about the candidate must follow from the
+sources.
+
 These do not count against a sentence:
 - Translation, paraphrase, word order, or leaving details out, unless that changes the meaning.
+- A fair summary of what several sources state, persuasive wording that adds no fact, and transition
+  words such as "also".
 - Equivalent units and notations, and a duration without the day it was counted.
 - A first-person subject, or an implied one.`;
 
-/** Asks about one claim at a time, with its sources only: no posting and no other claims. */
+/** Asks about one claim at a time, with its sources and the requirements it answers; no other claims. */
 export async function judge(
   provider: LlmProvider,
   model: string,
   text: string,
   language: Lang,
   cited: Source[],
+  asked: string[] = [],
 ): Promise<Entailment> {
+  const context =
+    asked.length > 0
+      ? `<asked>\n${asData(asked.map((text) => `- ${text}`).join("\n"))}\n</asked>\n\n`
+      : "";
   try {
     const judgement = await provider.generate({
       model,
       system: SYSTEM,
       prompt: `<sources>\n${asData(cited.map(describe).join("\n\n"))}\n</sources>
 
-<sentence language="${language}">
+${context}<sentence language="${language}">
 ${asData(text)}
 </sentence>`,
       schema: Judgement,

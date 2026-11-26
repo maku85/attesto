@@ -114,7 +114,7 @@ describe("accepted and rejected claims", () => {
   });
 
   it.each([
-    ["cv", "is impersonal", "exp-lagonube-2022"],
+    ["cv", "nominal style", "exp-lagonube-2022"],
     ["letter", "in the first person", "letter-body"],
   ] as const)(
     "gives the rewriter of a %s the same style rules as the drafter",
@@ -129,6 +129,25 @@ describe("accepted and rejected claims", () => {
       for (const system of systems) expect(system).toContain(rule);
     },
   );
+
+  it("shows the posting to the rewriter and the requirements a claim answers to the judge", async () => {
+    const provider = new PipelineProvider({
+      draft: [["letter-body", "Cut costs by 90%.", ["ach-lagonube-cloud-cost"]]],
+      redraft: {
+        "c-1": ["You need Kubernetes: I migrated 32 services.", ["ach-lagonube-k8s-migration"]],
+      },
+    });
+    const request = runRequest(db, provider);
+    provider.calls.length = 0;
+    const claimFor = (role: string) =>
+      provider.calls.find((call) => call.role === role)?.request.prompt;
+    const generated = generateDocument({ ...request, type: "letter" });
+    await generated;
+    expect(claimFor("redraft")).toContain("<posting>");
+    expect(claimFor("redraft")).toContain("Platform Engineer at Esempio SA");
+    // The fake drafter answers without "addresses", so the judge gets no context.
+    expect(claimFor("judge")).not.toContain("<asked>");
+  });
 
   it("rejects a source that exists but was not selected", async () => {
     const { verifications } = await run({

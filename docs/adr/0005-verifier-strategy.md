@@ -13,8 +13,9 @@ LLMs improve CVs by inventing. Some inventions can be excluded by code, others n
 2. **Numbers** (code): every number, date and duration must be stated by a cited source, with the
    same kind of unit: "40%" is not backed by "40 servers". Notations, units and number words are
    normalized in Italian, English and German. Ambiguous notations match any reading.
-3. **Meaning** (LLM): a judge sees one sentence and its sources, and nothing else. It does not see the
-   posting, so a posting cannot influence it.
+3. **Meaning** (LLM): a judge sees one sentence, its sources, and the text of the requirements it says it
+   answers, marked as context and not as evidence. It sees nothing else of the posting. Fair summaries
+   and persuasive wording that adds no fact are accepted.
 
 Later layers run only when earlier ones pass. Only `supported` is accepted. A rejected claim gets one
 rewrite, which goes through all three layers again, and is then dropped. A refusal or an unreadable

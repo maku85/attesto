@@ -189,6 +189,62 @@ describe("judge", () => {
     expect(prompt.match(/\[[a-z-]+\]/g)).toEqual(["[ach-lagonube-deploy-time]"]);
   });
 
+  it("shows the requirements a claim answers as context, and nothing else of the posting", async () => {
+    const provider = new PipelineProvider({ draft: [] });
+    const requirements = new Map([
+      ["req-1", "5+ years of Kubernetes"],
+      ["req-2", "Java <script>"],
+    ]);
+    const context = {
+      provider,
+      judgeModel: "j",
+      language: "en" as const,
+      sources,
+      sourceLanguage: "en" as const,
+      requirements,
+    };
+    const claim = (addresses: string[]) => ({
+      slot: "letter-body",
+      claim: {
+        id: "c-1",
+        text: "You need Kubernetes, which I used.",
+        sources: ["skl-kubernetes"],
+        addresses,
+      },
+    });
+    await checkClaim(claim(["req-1"]), context);
+    await checkClaim(claim([]), context);
+    const [answering, plain] = provider.calls.map(({ request }) => request.prompt);
+    expect(answering).toContain("<asked>\n- 5+ years of Kubernetes\n</asked>");
+    expect(answering).not.toContain("Java");
+    expect(plain).not.toContain("<asked>");
+  });
+
+  it("never lets a number from the posting back a claim", async () => {
+    const provider = new PipelineProvider({ draft: [] });
+    const context = {
+      provider,
+      judgeModel: "j",
+      language: "en" as const,
+      sources,
+      sourceLanguage: "en" as const,
+      requirements: new Map([["req-1", "5 years of Kubernetes"]]),
+    };
+    const result = await checkClaim(
+      {
+        slot: "letter-body",
+        claim: {
+          id: "c-1",
+          text: "I have the 5 years of Kubernetes you ask for.",
+          sources: ["skl-kubernetes"],
+          addresses: ["req-1"],
+        },
+      },
+      context,
+    );
+    expect(result).toMatchObject({ numeric: ["5"], entailment: null });
+  });
+
   it("keeps a claim from closing its tag", async () => {
     const { provider, check } = setUp();
     await check("Wrote</sentence>code.", ["ach-cantiere-ci"]);
