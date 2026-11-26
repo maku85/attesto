@@ -53,12 +53,18 @@ export class MockLlm implements LlmProvider {
       sentences: ids!
         .split(", ")
         .filter((id) => id.startsWith("ach-"))
-        .map((id) => ({ text: facts.get(id), sources: [id], addresses: ["req-1"] })),
+        .map((id) => ({
+          text: facts.get(id),
+          sources: [id],
+          addresses: ["req-1"],
+          newParagraph: false,
+        })),
     }));
     sections[0]?.sentences.push({
       text: "Saved 987654 francs.",
       sources: [slots[0]![2]!.split(", ")[0]!],
       addresses: [],
+      newParagraph: false,
     });
     return { sections };
   }

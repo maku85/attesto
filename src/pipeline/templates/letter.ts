@@ -2,6 +2,7 @@ import { localize } from "../../kb/entries.ts";
 import { formatDay } from "./dates.ts";
 import { fixed, fromKb, type Block, type Line } from "./layout.ts";
 import { LABELS } from "./labels.ts";
+import type { Claim } from "../document.ts";
 import type { TemplateInput } from "./index.ts";
 
 const SENTENCES_PER_PARAGRAPH = 3;
@@ -21,18 +22,31 @@ export function letterTemplate({ document, kb, analysis }: TemplateInput): Block
   const recipient = analysis.company
     ? [analysis.company, analysis.location].filter((value) => value !== null)
     : [];
-  const body = document.sections
-    .flatMap(({ claims }) => claims)
-    .map(({ id, text, sources }): Line => ({ text, origin: "claim", sources, claimId: id }));
+  const claims = document.sections.flatMap((section) => section.claims);
+  const toLine = ({ id, text, sources }: Claim): Line => ({
+    text,
+    origin: "claim",
+    sources,
+    claimId: id,
+  });
 
   // Why the person writes comes first, as a paragraph of its own.
   const motivations = new Set(
     kb.statements.filter(({ kind }) => kind === "motivation").map(({ id }) => id),
   );
-  const isMotivation = ({ sources }: Line) =>
+  const isMotivation = ({ sources }: Claim) =>
     sources.length > 0 && sources.every((id) => motivations.has(id));
-  const opening = body.filter(isMotivation);
-  const rest = body.filter((line) => !isMotivation(line));
+  const opening = claims.filter(isMotivation).map(toLine);
+  const rest = claims.filter((claim) => !isMotivation(claim));
+  // The drafter marks where a theme starts; without marks, a paragraph has three sentences.
+  const paragraphs = rest.some(({ newParagraph }) => newParagraph)
+    ? rest.reduce<Claim[][]>((groups, claim) => {
+        const last = groups.at(-1);
+        if (!last || claim.newParagraph) groups.push([claim]);
+        else last.push(claim);
+        return groups;
+      }, [])
+    : chunk(rest, SENTENCES_PER_PARAGRAPH);
 
   const posting = (text: string): Line => ({ text, origin: "posting", sources: [] });
   const paragraph = (...lines: Line[]): Block => ({ kind: "paragraph", lines });
@@ -47,7 +61,7 @@ export function letterTemplate({ document, kb, analysis }: TemplateInput): Block
     paragraph(fixed(label.salutation)),
     paragraph(posting(label.opening(analysis.title, analysis.company))),
     ...(opening.length > 0 ? [paragraph(...opening)] : []),
-    ...chunk(rest, SENTENCES_PER_PARAGRAPH).map((lines) => paragraph(...lines)),
+    ...paragraphs.map((group) => paragraph(...group.map(toLine))),
     ...(person.workCertificatesAvailable ? [paragraph(fromKb(label.certificates, person.id))] : []),
     paragraph(fixed(label.invitation)),
     { kind: "lines", lines: [fixed(label.closing)] },

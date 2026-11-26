@@ -32,6 +32,8 @@ const RULES = `How to write:
   for, and sum up several sources in one sentence where that reads better.
 - Let the sentences flow, but keep each one understandable on its own: name what it is about instead of
   "there", "in the same role" or "these". A transition word such as "also" is fine.
+- Every sentence tells the employer something worth knowing. Leave out one that only names tools or
+  repeats another.
 - Name at most three technologies in a sentence, the ones the posting cares about. A list of tools
   persuades no one; what was done with them does.
 - Weak: "At Example I use A, B, C, D, E and F." Strong: "You need a payment system that stays fast
@@ -75,7 +77,8 @@ const SLOT_RULES: Record<Document["type"], string> = {
 in "letter-body", which say why the candidate fits what this employer asks for. Order them by what the
 employer needs, not by employer or date: open with what the role needs and how the candidate matches
 it, then two or three themes from the posting, each backed by the strongest facts. Earlier roles get one
-sentence at most, and only if they add something. Name the employer or project a result belongs to. Salutation, the sentence that names the position, and the closing are
+sentence at most, and only if they add something. Start a paragraph ("newParagraph") with each theme.
+Name the employer or project a result belongs to. Salutation, the sentence that names the position, and the closing are
 printed elsewhere. Use the candidate's own statements only for motivation and availability.`,
 };
 
@@ -114,7 +117,10 @@ export async function draft(request: DraftRequest): Promise<PlacedClaim[]> {
         .filter((section) => section.slot === slot)
         .flatMap(({ sentences }) => sentences.map((text) => ({ slot, sentence: text }))),
     )
-    .map(({ slot, sentence }, i) => ({ slot, claim: { id: `c-${i + 1}`, ...sentence } }));
+    .map(({ slot, sentence }, i) => ({
+      slot,
+      claim: { id: `c-${i + 1}`, ...sentence, newParagraph: sentence.newParagraph === true },
+    }));
 }
 
 /** One more try at rejected claims. A claim missing from the answer has no supported wording. */
@@ -149,7 +155,10 @@ ${RULES}`,
   });
   return rejected.flatMap(({ placed: { slot, claim } }) => {
     const replacement = claims.find(({ id }) => id === claim.id);
-    return replacement ? [{ slot, claim: replacement }] : [];
+    // A rewrite keeps its place in the structure of the letter.
+    return replacement
+      ? [{ slot, claim: { ...replacement, newParagraph: claim.newParagraph } }]
+      : [];
   });
 }
 
@@ -166,6 +175,7 @@ function sentence(sources: Source[], analysis: JobAnalysis) {
     addresses: z
       .array(z.enum(analysis.requirements.map(({ id }) => id)))
       .describe("The requirements this sentence answers"),
+    newParagraph: z.boolean().describe("In a letter, true for the first sentence of a paragraph"),
   }) satisfies z.ZodType<Omit<Claim, "id">>;
 }
 

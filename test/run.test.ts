@@ -149,6 +149,29 @@ describe("accepted and rejected claims", () => {
     expect(claimFor("judge")).not.toContain("<asked>");
   });
 
+  it("keeps the paragraph of a rewritten sentence", async () => {
+    const provider = new PipelineProvider({
+      draft: [["letter-body", "Cut costs by 90%.", ["ach-lagonube-cloud-cost"]]],
+      redraft: { "c-1": ["Cut costs by 27%.", ["ach-lagonube-cloud-cost"]] },
+    });
+    const request = { ...runRequest(db, provider), type: "letter" as const };
+    const generate = generateDocument;
+    const original = provider.generate.bind(provider);
+    provider.generate = (async (call) => {
+      const answer = (await original(call)) as {
+        sections?: { sentences: { newParagraph?: boolean }[] }[];
+      };
+      for (const sentence of answer.sections?.flatMap((s) => s.sentences) ?? [])
+        sentence.newParagraph = true;
+      return answer;
+    }) as typeof provider.generate;
+    const { document } = await generate(request);
+    expect(document.sections[0]?.claims[0]).toMatchObject({
+      text: "Cut costs by 27%.",
+      newParagraph: true,
+    });
+  });
+
   it("rejects a source that exists but was not selected", async () => {
     const { verifications } = await run({
       draft: [["summary", "Shortened a batch.", ["ach-tecnobanca-batch"]]],
@@ -216,7 +239,12 @@ describe("what the LLM sees", () => {
     const schema = provider.calls[0]?.request.schema;
     const answer = (slot: string, source: string, requirementId: string) => ({
       sections: [
-        { slot, sentences: [{ text: "x", sources: [source], addresses: [requirementId] }] },
+        {
+          slot,
+          sentences: [
+            { text: "x", sources: [source], addresses: [requirementId], newParagraph: false },
+          ],
+        },
       ],
     });
     expect(schema?.safeParse(answer("summary", "skl-kubernetes", "req-1")).success).toBe(true);

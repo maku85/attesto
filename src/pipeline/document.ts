@@ -13,6 +13,8 @@ export const Claim = z.object({
   sources: z.array(z.string()),
   /** Used to measure coverage, never as evidence. */
   addresses: z.array(z.string()).default([]),
+  /** In a letter, the sentence starts a paragraph. */
+  newParagraph: z.boolean().optional(),
 });
 export type Claim = z.infer<typeof Claim>;
 

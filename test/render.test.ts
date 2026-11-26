@@ -231,6 +231,32 @@ describe("letter", () => {
     );
   });
 
+  it("starts paragraphs where the drafter marked them, also after a short one", () => {
+    const claim = (id: string, text: string, newParagraph: boolean) => ({
+      id,
+      text,
+      sources: ["ach-cantiere-ci"],
+      addresses: [],
+      newParagraph,
+    });
+    const output = markdown({
+      type: "letter",
+      sections: [
+        {
+          slot: "letter-body",
+          claims: [
+            claim("c-1", "First.", true),
+            claim("c-2", "Second.", false),
+            claim("c-3", "Third.", false),
+            claim("c-4", "Fourth.", false),
+            claim("c-5", "Fifth.", true),
+          ],
+        },
+      ],
+    });
+    expect(output).toContain("First. Second. Third. Fourth.\n\nFifth.");
+  });
+
   it("opens with what rests on a motivation alone", () => {
     const claim = (id: string, text: string, ...sources: string[]) => ({
       id,
