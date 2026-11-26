@@ -32,6 +32,10 @@ const RULES = `How to write:
   for, and sum up several sources in one sentence where that reads better.
 - Let the sentences flow, but keep each one understandable on its own: name what it is about instead of
   "there", "in the same role" or "these". A transition word such as "also" is fine.
+- Name at most three technologies in a sentence, the ones the posting cares about. A list of tools
+  persuades no one; what was done with them does.
+- Weak: "At Example I use A, B, C, D, E and F." Strong: "You need a payment system that stays fast
+  under load: at Example I raised its throughput from 400 to 2500 events per second."
 
 What may be said:
 - Exactly one sentence. Avoid abbreviations with full stops.
@@ -68,8 +72,10 @@ const SLOT_RULES: Record<Document["type"], string> = {
   are printed above it, so do not repeat them. Every bullet says
   what the candidate did: leave out one that only lists technologies.`,
   letter: `Write the body of a cover letter: five to nine connected sentences
-in "letter-body", which say why the candidate fits what this employer asks for. Name the employer or
-project a result belongs to. Salutation, the sentence that names the position, and the closing are
+in "letter-body", which say why the candidate fits what this employer asks for. Order them by what the
+employer needs, not by employer or date: open with what the role needs and how the candidate matches
+it, then two or three themes from the posting, each backed by the strongest facts. Earlier roles get one
+sentence at most, and only if they add something. Name the employer or project a result belongs to. Salutation, the sentence that names the position, and the closing are
 printed elsewhere. Use the candidate's own statements only for motivation and availability.`,
 };
 
